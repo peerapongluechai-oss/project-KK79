@@ -1,0 +1,595 @@
+import React, { useState, useEffect } from 'react';
+import { Calculator, DollarSign, TrendingUp, ShoppingCart, Percent, PlusCircle, Trash2, Store, Target, LayoutDashboard, UtensilsCrossed, Flame, BookOpen, ChefHat, CheckCircle2, Banknote, Timer, Info } from 'lucide-react';
+
+export default function App() {
+  const [sellingPrice, setSellingPrice] = useState(79);
+  const [activeTab, setActiveTab] = useState('recipe'); 
+  
+  const [items, setItems] = useState([
+    { id: 1, category: '1. กล้วยแก้วใส 2 สี', name: 'กล้วยน้ำว้า (มะลิอ่อง)', spec: 'ตลาดใหม่', price: 40, totalQty: 15, unit: 'ลูก', usedQty: 1.5 },
+    { id: 2, category: '1. กล้วยแก้วใส 2 สี', name: 'แป้งมัน (เหรียญทองคู่)', spec: 'ถุง 500g', price: 35, totalQty: 500, unit: 'กรัม', usedQty: 30 },
+    { id: 3, category: '1. กล้วยแก้วใส 2 สี', name: 'แป้งท้าว (ปลามังกร)', spec: 'ถุง 500g', price: 40, totalQty: 500, unit: 'กรัม', usedQty: 10 },
+    { id: 4, category: '1. กล้วยแก้วใส 2 สี', name: 'ดอกอัญชัน', spec: 'สด/แห้ง', price: 20, totalQty: 100, unit: 'กรัม', usedQty: 2 },
+    { id: 5, category: '1. กล้วยแก้วใส 2 สี', name: 'เกลือป่น', spec: 'สำหรับแช่กล้วย', price: 10, totalQty: 500, unit: 'กรัม', usedQty: 5 },
+    
+    { id: 6, category: '2. กะทิคาราเมลทองคำ', name: 'หัวกะทิ (Amphawa)', spec: 'ขวด PET 250ml', price: 25, totalQty: 250, unit: 'ml', usedQty: 40 },
+    { id: 7, category: '2. กะทิคาราเมลทองคำ', name: 'น้ำตาลช่อดอกมะพร้าว', spec: 'Cobie Brown', price: 150, totalQty: 500, unit: 'กรัม', usedQty: 15 },
+    { id: 8, category: '2. กะทิคาราเมลทองคำ', name: 'น้ำตาลโตนดแท้ 100%', spec: 'ตาลบุรี', price: 80, totalQty: 500, unit: 'กรัม', usedQty: 5 },
+    { id: 9, category: '2. กะทิคาราเมลทองคำ', name: 'ใบเตยหอม', spec: 'กำ (ตลาดใหม่)', price: 15, totalQty: 100, unit: 'กรัม', usedQty: 5 },
+    { id: 10, category: '2. กะทิคาราเมลทองคำ', name: 'เนื้อมะพร้าวอ่อนแช่แข็ง', spec: 'Makro (1kg)', price: 180, totalQty: 1000, unit: 'กรัม', usedQty: 25 },
+    
+    { id: 11, category: '3. ครัมเบิ้ลมะพร้าวคั่ว', name: 'มะพร้าวอบแห้ง', spec: 'Aro / Imperial', price: 120, totalQty: 1000, unit: 'กรัม', usedQty: 8 },
+    { id: 12, category: '3. ครัมเบิ้ลมะพร้าวคั่ว', name: 'เนยสดจืด', spec: 'Allowrie (227g)', price: 120, totalQty: 227, unit: 'กรัม', usedQty: 2 },
+    { id: 13, category: '3. ครัมเบิ้ลมะพร้าวคั่ว', name: 'น้ำตาลทรายเกล็ดเล็ก', spec: 'มิตรผล', price: 25, totalQty: 1000, unit: 'กรัม', usedQty: 2 },
+    
+    { id: 14, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ไอศกรีมกะทิสด', spec: 'ถัง 3kg (~60 Scoop)', price: 350, totalQty: 60, unit: 'สกู๊ป', usedQty: 1 },
+    { id: 15, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ถ้วยพลาสติกใสทรงแบน', spec: 'พร้อมฝาโดม (50 ชุด)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1 },
+    { id: 16, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ช้อนตักขนม', spec: 'สีดำพรีเมียม (50 คัน)', price: 40, totalQty: 50, unit: 'คัน', usedQty: 1 },
+    { id: 17, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'สติกเกอร์โลโก้', spec: 'สั่งทำ (100 ดวง)', price: 50, totalQty: 100, unit: 'ดวง', usedQty: 1 },
+  ]);
+
+  const [equipments, setEquipments] = useState([
+    { id: 1, name: 'โต๊ะพับหน้าขาว', spec: 'ขนาด 120x60 cm', price: 800, qty: 1 },
+    { id: 2, name: 'เตาแก๊สปิกนิก + แก๊สกระป๋อง', spec: 'สำหรับตั้งหน้าบ้าน', price: 600, qty: 1 },
+    { id: 3, name: 'หม้อต้มสเตนเลส', spec: 'สำหรับต้มกล้วย/กะทิ', price: 300, qty: 2 },
+    { id: 4, name: 'กระทะเทฟลอน + พาย', spec: 'สำหรับคั่วครัมเบิ้ล', price: 450, qty: 1 },
+    { id: 5, name: 'ถาดพลาสติก + กระดาษไข', spec: 'พักวัตถุดิบ / ครัมเบิ้ล', price: 150, qty: 1 },
+    { id: 6, name: 'ป้ายไวนิล / สแตนดี้', spec: 'ตกแต่งหน้าร้าน', price: 500, qty: 1 }
+  ]);
+
+  const handleInputChange = (id, field, value) => {
+    setItems(items.map(item => {
+      if (item.id === id) {
+        const isText = ['name', 'spec', 'unit'].includes(field);
+        return { ...item, [field]: isText ? value : (value === '' ? '' : Number(value)) };
+      }
+      return item;
+    }));
+  };
+
+  const addNewItem = (category) => {
+    const newId = Math.max(0, ...items.map(i => i.id)) + 1;
+    setItems([...items, {
+      id: newId, category: category, name: 'วัตถุดิบใหม่...', spec: 'รายละเอียด', price: 0, totalQty: 1, unit: 'หน่วย', usedQty: 0
+    }]);
+  };
+
+  const deleteItem = (id) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const handleEquipChange = (id, field, value) => {
+    setEquipments(equipments.map(item => {
+      if (item.id === id) {
+        const isText = ['name', 'spec'].includes(field);
+        return { ...item, [field]: isText ? value : (value === '' ? '' : Number(value)) };
+      }
+      return item;
+    }));
+  };
+
+  const addEquipItem = () => {
+    const newId = Math.max(0, ...equipments.map(i => i.id)) + 1;
+    setEquipments([...equipments, {
+      id: newId, name: 'อุปกรณ์ใหม่...', spec: 'รายละเอียด', price: 0, qty: 1
+    }]);
+  };
+
+  const deleteEquipItem = (id) => {
+    setEquipments(equipments.filter(item => item.id !== id));
+  };
+
+  const calculateCost = (price, totalQty, usedQty) => {
+    if (!price || !totalQty || !usedQty) return 0;
+    return (price / totalQty) * usedQty;
+  };
+
+  const totalCost = items.reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
+  const profit = sellingPrice - totalCost;
+  const margin = (profit / sellingPrice) * 100;
+
+  const totalEquipCost = equipments.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const breakEvenCups = profit > 0 ? Math.ceil(totalEquipCost / profit) : 0;
+
+  const groupedItems = items.reduce((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+
+  return (
+    <div className="min-h-screen bg-[#FDF9F1] pb-24 font-sans text-stone-800">
+      {/* App Header - Culinary Theme (Caramel/Gold Gradient) */}
+      <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-[2rem]">
+        <div className="flex justify-between items-center mb-1">
+          <h1 className="text-xl font-bold flex items-center tracking-wide">
+            <ChefHat className="w-6 h-6 mr-2 opacity-90" />
+            แก้วกล้วย <span className="font-light text-amber-100 ml-1">Bistro</span>
+          </h1>
+          <div className="bg-white/20 backdrop-blur-sm text-[10px] px-3 py-1.5 rounded-full font-medium border border-white/30 flex items-center">
+            <span className="w-2 h-2 rounded-full bg-green-400 mr-1.5 animate-pulse"></span>
+            ครัวเปิด
+          </div>
+        </div>
+        <p className="text-amber-100 text-xs pl-8">ระบบคำนวณต้นทุน & คู่มือสูตรอาหาร</p>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="p-4 max-w-md mx-auto w-full">
+        
+        {/* =======================
+            TAB 1: DASHBOARD (ภาพรวมร้าน)
+            ======================= */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+            
+            {/* กล่องราคาขาย (Golden Ticket Style) */}
+            <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-amber-200/40 to-orange-200/40 rounded-full blur-xl"></div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-amber-800/80 text-sm font-medium flex items-center">
+                    <Banknote className="w-4 h-4 mr-1.5 text-amber-600" />
+                    ราคาขายต่อเสิร์ฟ (Selling Price)
+                  </p>
+                </div>
+                <div className="flex items-baseline border-b border-amber-300/50 pb-2 w-max">
+                  <span className="text-2xl text-amber-700 mr-1">฿</span>
+                  <input 
+                    type="number" 
+                    value={sellingPrice}
+                    onChange={(e) => setSellingPrice(Number(e.target.value))}
+                    className="text-5xl font-black text-amber-900 bg-transparent focus:outline-none w-28 text-center"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* สรุปกำไร/ต้นทุน (Soft Cards) */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-3xl shadow-sm p-5 border border-stone-100 flex flex-col justify-center items-center text-center relative overflow-hidden group hover:border-orange-200 transition-colors">
+                <div className="absolute top-0 left-0 w-full h-1 bg-orange-400 opacity-50"></div>
+                <ShoppingCart className="w-6 h-6 text-orange-400 mb-2" />
+                <p className="text-stone-500 text-xs font-medium mb-1">ต้นทุนวัตถุดิบ (Cost)</p>
+                <p className="text-2xl font-bold text-stone-800">฿{totalCost.toFixed(2)}</p>
+              </div>
+              
+              <div className="bg-white rounded-3xl shadow-sm p-5 border border-stone-100 flex flex-col justify-center items-center text-center relative overflow-hidden group hover:border-green-200 transition-colors">
+                <div className="absolute top-0 left-0 w-full h-1 bg-green-400 opacity-50"></div>
+                <Percent className="w-6 h-6 text-green-500 mb-2" />
+                <p className="text-stone-500 text-xs font-medium mb-1">มาร์จิ้น (Margin)</p>
+                <p className="text-2xl font-bold text-stone-800">{margin > 0 ? margin.toFixed(1) : 0}%</p>
+              </div>
+
+              {/* กำไรสุทธิ */}
+              <div className="col-span-2 bg-gradient-to-br from-green-600 to-emerald-500 rounded-3xl shadow-md p-6 text-white relative overflow-hidden">
+                <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                <div className="relative z-10 flex justify-between items-center">
+                  <div>
+                    <p className="text-green-50 text-sm font-medium flex items-center mb-1">
+                      <TrendingUp className="w-4 h-4 mr-1.5" /> กำไรสุทธิ (Net Profit)
+                    </p>
+                    <p className="text-xs text-green-100/80">ต่อ 1 เสิร์ฟ</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-4xl font-black">฿{profit.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* จุดคุ้มทุน */}
+            <div className="bg-white rounded-[2rem] shadow-sm p-6 border border-stone-100 mt-2 relative overflow-hidden">
+               <div className="absolute left-0 top-0 w-1.5 h-full bg-blue-400"></div>
+              <div className="flex justify-between items-start mb-5 pl-2">
+                <div>
+                  <h3 className="text-stone-800 font-bold flex items-center text-lg">
+                    <Target className="w-5 h-5 mr-1.5 text-blue-500" /> เป้าหมายคืนทุน
+                  </h3>
+                  <p className="text-xs text-stone-500 mt-1">ยอดขายเพื่อคืนทุนค่าอุปกรณ์เบื้องต้น</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between bg-stone-50 rounded-2xl p-4 border border-stone-100">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-stone-400 font-bold mb-1">เงินลงทุนตั้งต้น</p>
+                  <p className="text-xl font-bold text-stone-700">฿{totalEquipCost.toLocaleString()}</p>
+                </div>
+                <div className="h-10 w-px bg-stone-200"></div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-wider text-stone-400 font-bold mb-1">ต้องขายให้ได้</p>
+                  <p className="text-2xl font-black text-blue-600">{breakEvenCups.toLocaleString()} <span className="text-sm font-medium text-stone-500">ถ้วย</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* =======================
+            TAB 2: INGREDIENTS (ตู้เสบียง)
+            ======================= */}
+        {activeTab === 'ingredients' && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+            <div className="flex justify-between items-end mb-2">
+              <div>
+                <h2 className="text-2xl font-black text-stone-800 tracking-tight">รายการวัตถุดิบ</h2>
+                <p className="text-sm text-amber-700/80 font-medium flex items-center mt-1">
+                  <UtensilsCrossed className="w-4 h-4 mr-1.5" /> Pantry & Ingredients
+                </p>
+              </div>
+            </div>
+
+            {Object.keys(groupedItems).map((category, idx) => (
+              <div key={idx} className="space-y-4">
+                <div className="flex justify-between items-center border-b-2 border-stone-200 pb-2 mt-8">
+                  <h3 className="font-bold text-stone-700 text-lg flex items-center">
+                    <span className="w-2 h-6 bg-amber-500 rounded-full mr-2"></span>
+                    {category}
+                  </h3>
+                  <button onClick={() => addNewItem(category)} className="text-xs flex items-center text-amber-700 bg-amber-100 hover:bg-amber-200 transition-colors px-3 py-1.5 rounded-full font-bold shadow-sm">
+                    <PlusCircle className="w-3.5 h-3.5 mr-1" /> เพิ่ม
+                  </button>
+                </div>
+
+                {groupedItems[category].map((item) => {
+                  const cost = calculateCost(item.price, item.totalQty, item.usedQty);
+                  return (
+                    <div key={item.id} className="bg-white p-5 rounded-3xl shadow-sm border border-stone-100 relative group">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="w-full pr-10">
+                          <input 
+                            type="text" 
+                            value={item.name} 
+                            onChange={(e) => handleInputChange(item.id, 'name', e.target.value)}
+                            className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none transition-colors"
+                            placeholder="ชื่อวัตถุดิบ"
+                          />
+                          <div className="flex items-center mt-1">
+                            <Info className="w-3 h-3 text-stone-400 mr-1" />
+                            <input 
+                              type="text" 
+                              value={item.spec} 
+                              onChange={(e) => handleInputChange(item.id, 'spec', e.target.value)}
+                              className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none"
+                              placeholder="ยี่ห้อ/รายละเอียด"
+                            />
+                          </div>
+                        </div>
+                        <button onClick={() => deleteItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors p-1 bg-stone-50 rounded-full">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="bg-[#FDF9F1] p-3 rounded-2xl border border-stone-100">
+                          <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1">ราคาซื้อ (฿)</label>
+                          <input 
+                            type="number" 
+                            value={item.price} 
+                            onChange={(e) => handleInputChange(item.id, 'price', e.target.value)}
+                            className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
+                          />
+                        </div>
+                        <div className="bg-[#FDF9F1] p-3 rounded-2xl border border-stone-100">
+                          <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1">ปริมาณรวม</label>
+                          <div className="flex items-center">
+                            <input 
+                              type="number" 
+                              value={item.totalQty} 
+                              onChange={(e) => handleInputChange(item.id, 'totalQty', e.target.value)}
+                              className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
+                            />
+                            <input 
+                              type="text" 
+                              value={item.unit} 
+                              onChange={(e) => handleInputChange(item.id, 'unit', e.target.value)}
+                              className="w-10 bg-transparent text-xs font-medium text-stone-500 text-right focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 p-3 rounded-2xl border border-amber-100/50 flex justify-between items-center">
+                          <div>
+                            <label className="text-[10px] text-amber-700 font-bold uppercase tracking-wider block mb-1">ปริมาณที่ใช้ / เสิร์ฟ</label>
+                            <div className="flex items-center">
+                              <input 
+                                type="number" 
+                                value={item.usedQty} 
+                                onChange={(e) => handleInputChange(item.id, 'usedQty', e.target.value)}
+                                className="w-20 bg-transparent font-black text-amber-600 text-xl focus:outline-none"
+                              />
+                              <span className="text-sm font-medium text-amber-700/70">{item.unit}</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                             <label className="text-[10px] text-amber-700/60 font-bold uppercase tracking-wider block mb-1">ต้นทุน</label>
+                             <span className="text-2xl font-black text-amber-600">฿{cost.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* =======================
+            TAB 3: EQUIPMENT (อุปกรณ์ครัว)
+            ======================= */}
+        {activeTab === 'equipment' && (
+          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+            <div className="flex justify-between items-end mb-6">
+              <div>
+                <h2 className="text-2xl font-black text-stone-800 tracking-tight">อุปกรณ์ครัว</h2>
+                <p className="text-sm text-stone-500 font-medium flex items-center mt-1">
+                  <Flame className="w-4 h-4 mr-1.5 text-orange-500" /> บันทึกเงินลงทุนหน้าเครื่อง
+                </p>
+              </div>
+              <button onClick={addEquipItem} className="text-sm flex items-center text-white bg-stone-800 hover:bg-stone-700 transition-colors px-4 py-2 rounded-full font-bold shadow-md">
+                <PlusCircle className="w-4 h-4 mr-1.5" /> เพิ่ม
+              </button>
+            </div>
+
+            {equipments.map((item) => {
+              const itemTotal = item.price * item.qty;
+              return (
+                <div key={item.id} className="bg-white p-5 rounded-3xl shadow-sm border border-stone-200 relative">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="w-full pr-10">
+                      <input 
+                        type="text" 
+                        value={item.name} 
+                        onChange={(e) => handleEquipChange(item.id, 'name', e.target.value)}
+                        className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none"
+                        placeholder="ชื่ออุปกรณ์"
+                      />
+                      <input 
+                        type="text" 
+                        value={item.spec} 
+                        onChange={(e) => handleEquipChange(item.id, 'spec', e.target.value)}
+                        className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none mt-1"
+                        placeholder="รายละเอียด"
+                      />
+                    </div>
+                    <button onClick={() => deleteEquipItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors bg-stone-50 p-1.5 rounded-full">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between bg-stone-50 p-3 rounded-2xl border border-stone-100">
+                    <div className="flex-1 border-r border-stone-200 pr-3">
+                      <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">ราคา/ชิ้น</label>
+                      <div className="flex items-center mt-1">
+                        <span className="text-stone-400 mr-1 text-sm">฿</span>
+                        <input 
+                          type="number" 
+                          value={item.price} 
+                          onChange={(e) => handleEquipChange(item.id, 'price', e.target.value)}
+                          className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1 px-3">
+                      <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">จำนวน</label>
+                      <div className="flex items-center mt-1 text-stone-700">
+                        <span className="text-sm mr-1 font-medium">x</span>
+                        <input 
+                          type="number" 
+                          value={item.qty} 
+                          onChange={(e) => handleEquipChange(item.id, 'qty', e.target.value)}
+                          className="w-full bg-transparent font-black text-lg focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1 bg-stone-800 text-white p-2 rounded-xl text-right">
+                       <label className="text-[9px] text-stone-400 font-bold uppercase tracking-wider block mb-0.5">รวมเป็นเงิน</label>
+                       <span className="text-lg font-black tracking-tight">฿{itemTotal.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* =======================
+            TAB 4: RECIPE (สมุดสูตรลับ)
+            ======================= */}
+        {activeTab === 'recipe' && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 pt-2">
+            <div className="mb-6">
+              <h2 className="text-2xl font-black text-stone-800 tracking-tight">สมุดสูตรลับ</h2>
+              <p className="text-sm text-stone-500 font-medium flex items-center mt-1">
+                <BookOpen className="w-4 h-4 mr-1.5 text-amber-600" /> ขั้นตอนการทำฉบับ Majourney
+              </p>
+            </div>
+
+            {/* ส่วนที่ 1: กล้วยแก้วใส */}
+            <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-2 h-full bg-yellow-400"></div>
+              <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between">
+                <h3 className="font-bold text-stone-800 text-lg ml-2">1. กล้วยแก้วใส 2 สี</h3>
+                <span className="bg-yellow-100 text-yellow-700 text-[10px] px-2 py-1 rounded-full font-bold">หนึบ-ใส</span>
+              </div>
+              <div className="p-5 space-y-5 text-sm text-stone-600 bg-stone-50/30">
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5">1</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">เตรียมกล้วย</p>
+                    <p className="leading-relaxed">กล้วยน้ำว้ามะลิอ่อง (เปลือกเหลืองเฟิร์ม) หั่นลูกเต๋า แช่น้ำเกลือเจือจาง (เกลือ 1 ช้อนชา/น้ำ 1 ลิตร) นาน 15 นาที เพื่อล้างยางและลดฝาด</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5">2</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">เตรียมสีและแป้ง</p>
+                    <p className="leading-relaxed">น้ำ 2 ชาม (น้ำเปล่า/น้ำต้มดอกอัญชัน) <br/>ผสมแป้งมัน(ตราเหรียญทองคู่) 3 ส่วน : แป้งท้าว(ตราปลามังกร) 1 ส่วน</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">3</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">เทคนิคคลุกแป้ง</p>
+                    <p className="leading-relaxed">นำกล้วยลงคลุกแป้ง พรมน้ำสีทีละนิดแล้วคลุกแป้งทับ สลับกัน 3-4 รอบจนแป้งรัดตัวหนาพอดี ร่อนเศษแป้งออก</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">4</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1 flex items-center">การต้มและการพัก <Timer className="w-3 h-3 ml-1 text-stone-400"/></p>
+                    <p className="leading-relaxed">ต้มน้ำเดือดจัด ใส่กล้วย รอจนแป้งสุกใสและลอยขึ้น (5-7 นาที) ช้อนน็อกน้ำเย็นจัด หรือแช่น้ำอุ่นใบเตยกันติดกัน</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ส่วนที่ 2: กะทิคาราเมล */}
+            <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-2 h-full bg-orange-400"></div>
+              <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between">
+                <h3 className="font-bold text-stone-800 text-lg ml-2">2. ซอสกะทิคาราเมล</h3>
+                <span className="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-full font-bold">หอมมัน</span>
+              </div>
+              <div className="p-5 space-y-5 text-sm text-stone-600 bg-stone-50/30">
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">1</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1 flex items-center">เคี่ยวน้ำตาลคาราเมล <Flame className="w-3 h-3 ml-1 text-orange-400"/></p>
+                    <p className="leading-relaxed">น้ำตาลช่อดอกมะพร้าว 70% + โตนดแท้ 30% พรมน้ำเปล่านิดเดียว เคี่ยวไฟอ่อนจนละลายหอมเป็นสีทองสว่าง</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">2</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">ผสมกะทิอัมพวา</p>
+                    <p className="leading-relaxed">เทหัวกะทิ Amphawa ลงไปคนให้เข้ากัน ตามด้วยใบเตยแก่ขยำมัดปม (ให้กลิ่นน้ำมันหอมระเหยออก)</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">3</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">คุมไฟและใส่เนื้อมะพร้าว</p>
+                    <p className="leading-relaxed bg-orange-50 text-orange-800 p-2 rounded-lg mt-1 border border-orange-100 text-xs"><b>สำคัญ:</b> ไฟอ่อนระวังแตกมันเป็นฝ้า พอเริ่มร้อนใส่เนื้อมะพร้าวอ่อนแช่แข็งเส้น (Makro) คนเบาๆ ปิดเตาทันที</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ส่วนที่ 3: ครัมเบิ้ล */}
+            <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-2 h-full bg-amber-700"></div>
+              <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between">
+                <h3 className="font-bold text-stone-800 text-lg ml-2">3. ครัมเบิ้ลคั่ว (Topping)</h3>
+                <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-1 rounded-full font-bold">กรอบนาน</span>
+              </div>
+              <div className="p-5 space-y-5 text-sm text-stone-600 bg-stone-50/30">
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">1</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">ละลายเนย</p>
+                    <p className="leading-relaxed">กระทะเทฟลอน ตั้งไฟอ่อนที่สุด ใส่เนยสดจืด 30g กลิ้งเคลือบกระทะ</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">2</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1 flex items-center">อัตราส่วนและการคั่ว <Timer className="w-3 h-3 ml-1 text-stone-400"/></p>
+                    <p className="leading-relaxed">มะพร้าวอบแห้ง (Aro) 200g + น้ำตาลทราย 2 ช้อนโต๊ะ + เกลือ 1/4 ช้อนชา ตะล่อมคั่วใจเย็น 10-15 นาที</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">3</span>
+                  <div>
+                    <p className="font-bold text-stone-800 mb-1">เทคนิคไล่ความชื้น</p>
+                    <p className="leading-relaxed">เมื่อสีเหลืองทองหอมฟุ้ง เทพักบนถาดกว้างแบน <b className="text-amber-700">ต้องรอให้เย็นสนิท 100%</b> ค่อยเก็บใส่กระปุกสุญญากาศ</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ส่วนที่ 4: การจัดเสิร์ฟ */}
+            <div className="bg-stone-800 rounded-3xl shadow-lg border border-stone-700 overflow-hidden mb-6 text-stone-300 relative">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+              <div className="px-5 py-4 border-b border-stone-700/50 flex items-center relative z-10">
+                <CheckCircle2 className="w-5 h-5 text-green-400 mr-2" />
+                <h3 className="font-bold text-white text-lg">4. เทคนิคจัดจาน (Plating)</h3>
+              </div>
+              <div className="p-5 space-y-4 text-sm relative z-10">
+                <div className="bg-stone-700/50 p-3 rounded-xl border border-stone-600 mb-4 inline-block">
+                  <p className="text-stone-400 text-xs uppercase tracking-wider font-bold mb-1">ภาชนะที่ใช้</p>
+                  <p className="text-white font-medium text-sm">ถ้วยใสทรงตื้นกว้าง (Dessert Bowl)</p>
+                </div>
+                <ul className="list-none space-y-4">
+                  <li className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-stone-500 mt-1.5 mr-3 shrink-0"></div>
+                    <p><b className="text-white">โชว์ความใส:</b> แผ่กล้วยแก้ว 2 สีสลับกันก้นถ้วย ให้แสงส่องผ่านเหมือนอัญมณี</p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-stone-500 mt-1.5 mr-3 shrink-0"></div>
+                    <p><b className="text-white">สระคาราเมล:</b> ราดซอสและมะพร้าวอ่อนพอขลุกขลิก ให้กระจายรอบๆ</p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-stone-500 mt-1.5 mr-3 shrink-0"></div>
+                    <p><b className="text-white">พระเอกของจาน:</b> ตักไอศกรีมกะทิ 1 สกู๊ปกลมสวย วางตระหง่านตรงกลาง</p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-stone-500 mt-1.5 mr-3 shrink-0"></div>
+                    <p><b className="text-white">ฟินิชชิ่ง:</b> โรยครัมเบิ้ลรอบฐานและบนยอดเล็กน้อย ปิดฝาโดม เสิร์ฟพร้อมช้อนดำพรีเมียม</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
+      {/* Bottom Navigation Bar - Cafe Style */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-200 flex justify-between px-4 py-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 pb-safe rounded-t-3xl">
+        <button 
+          onClick={() => setActiveTab('dashboard')} 
+          className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'dashboard' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
+        >
+          {activeTab === 'dashboard' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
+          <LayoutDashboard className={`w-6 h-6 mb-1 ${activeTab === 'dashboard' ? 'fill-amber-100' : ''}`} />
+          <span className="text-[10px] font-bold tracking-wide">หน้าร้าน</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('ingredients')} 
+          className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'ingredients' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
+        >
+          {activeTab === 'ingredients' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
+          <UtensilsCrossed className="w-6 h-6 mb-1" />
+          <span className="text-[10px] font-bold tracking-wide">วัตถุดิบ</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('equipment')} 
+          className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'equipment' ? 'text-orange-500' : 'text-stone-400 hover:text-orange-400'}`}
+        >
+           {activeTab === 'equipment' && <span className="absolute -top-3 w-8 h-1 bg-orange-500 rounded-full"></span>}
+          <Store className="w-6 h-6 mb-1" />
+          <span className="text-[10px] font-bold tracking-wide">อุปกรณ์</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('recipe')} 
+          className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'recipe' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
+        >
+           {activeTab === 'recipe' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
+          <BookOpen className={`w-6 h-6 mb-1 ${activeTab === 'recipe' ? 'fill-amber-100' : ''}`} />
+          <span className="text-[10px] font-bold tracking-wide">สูตรลับ</span>
+        </button>
+      </div>
+
+      {/* Safe area support for iOS/Mobile */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      `}} />
+    </div>
+  );
+}
