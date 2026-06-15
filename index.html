@@ -15,7 +15,7 @@
   <!-- นำเข้า Babel เพื่อแปลงโค้ด JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- นำเข้า Phosphor Icons (แก้ปัญหาไอคอนไม่โหลด) -->
+  <!-- นำเข้า Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
   <style>
@@ -36,14 +36,11 @@
   </style>
 </head>
 <body>
-  <!-- จุดที่แอปพลิเคชันจะแสดงผล -->
   <div id="root"></div>
 
-  <!-- โค้ดหลักของแอปพลิเคชัน -->
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // ข้อมูลเริ่มต้น (Default Data)
     const defaultItems = [
       { id: 1, category: '1. กล้วยแก้วใส 2 สี', name: 'กล้วยน้ำว้า (มะลิอ่อง)', spec: 'ตลาดใหม่', price: 40, totalQty: 15, unit: 'ลูก', usedQty: 1.5 },
       { id: 2, category: '1. กล้วยแก้วใส 2 สี', name: 'แป้งมัน (เหรียญทองคู่)', spec: 'ถุง 500g', price: 35, totalQty: 500, unit: 'กรัม', usedQty: 30 },
@@ -77,7 +74,6 @@
     ];
 
     function App() {
-      // ดึงข้อมูลจาก LocalStorage (ถ้ามี) เพื่อไม่ให้ข้อมูลหายตอนปิดแอป
       const [sellingPrice, setSellingPrice] = useState(() => {
         const saved = localStorage.getItem('mj_price');
         return saved ? JSON.parse(saved) : 79;
@@ -95,7 +91,6 @@
         return saved ? JSON.parse(saved) : defaultEquipments;
       });
 
-      // สั่งบันทึกข้อมูลอัตโนมัติทุกครั้งที่มีการเปลี่ยนแปลง
       useEffect(() => { localStorage.setItem('mj_price', JSON.stringify(sellingPrice)); }, [sellingPrice]);
       useEffect(() => { localStorage.setItem('mj_items', JSON.stringify(items)); }, [items]);
       useEffect(() => { localStorage.setItem('mj_equip', JSON.stringify(equipments)); }, [equipments]);
@@ -112,9 +107,7 @@
 
       const addNewItem = (category) => {
         const newId = Math.max(0, ...items.map(i => i.id)) + 1;
-        setItems([...items, {
-          id: newId, category: category, name: 'วัตถุดิบใหม่...', spec: 'รายละเอียด', price: 0, totalQty: 1, unit: 'หน่วย', usedQty: 0
-        }]);
+        setItems([...items, { id: newId, category: category, name: 'วัตถุดิบใหม่...', spec: 'รายละเอียด', price: 0, totalQty: 1, unit: 'หน่วย', usedQty: 0 }]);
       };
 
       const deleteItem = (id) => {
@@ -133,9 +126,7 @@
 
       const addEquipItem = () => {
         const newId = Math.max(0, ...equipments.map(i => i.id)) + 1;
-        setEquipments([...equipments, {
-          id: newId, name: 'อุปกรณ์ใหม่...', spec: 'รายละเอียด', price: 0, qty: 1
-        }]);
+        setEquipments([...equipments, { id: newId, name: 'อุปกรณ์ใหม่...', spec: 'รายละเอียด', price: 0, qty: 1 }]);
       };
 
       const deleteEquipItem = (id) => {
@@ -150,7 +141,6 @@
       const totalCost = items.reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
       const profit = sellingPrice - totalCost;
       const margin = (profit / sellingPrice) * 100;
-
       const totalEquipCost = equipments.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const breakEvenCups = profit > 0 ? Math.ceil(totalEquipCost / profit) : 0;
 
@@ -177,38 +167,26 @@
             <p className="text-amber-100 text-xs pl-8">ระบบคำนวณต้นทุน & คู่มือสูตรอาหาร</p>
           </div>
 
-          {/* Main Content Area */}
           <div className="p-4 max-w-md mx-auto w-full">
             
-            {/* =======================
-                TAB 1: DASHBOARD (ภาพรวมร้าน)
-                ======================= */}
+            {/* TAB 1: DASHBOARD */}
             {activeTab === 'dashboard' && (
               <div className="space-y-5 pt-2">
-                
-                {/* กล่องราคาขาย */}
                 <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
                   <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-amber-200/40 to-orange-200/40 rounded-full blur-xl"></div>
                   <div className="relative z-10">
                     <div className="flex justify-between items-center mb-2">
                       <p className="text-amber-800/80 text-sm font-medium flex items-center">
-                        <i className="ph ph-money text-base mr-1.5 text-amber-600"></i>
-                        ราคาขายต่อเสิร์ฟ (Selling Price)
+                        <i className="ph ph-money text-base mr-1.5 text-amber-600"></i> ราคาขายต่อเสิร์ฟ (Selling Price)
                       </p>
                     </div>
                     <div className="flex items-baseline border-b border-amber-300/50 pb-2 w-max">
                       <span className="text-2xl text-amber-700 mr-1">฿</span>
-                      <input 
-                        type="number" 
-                        value={sellingPrice}
-                        onChange={(e) => setSellingPrice(Number(e.target.value))}
-                        className="text-5xl font-black text-amber-900 bg-transparent focus:outline-none w-28 text-center"
-                      />
+                      <input type="number" value={sellingPrice} onChange={(e) => setSellingPrice(Number(e.target.value))} className="text-5xl font-black text-amber-900 bg-transparent focus:outline-none w-28 text-center" />
                     </div>
                   </div>
                 </div>
 
-                {/* สรุปกำไร/ต้นทุน */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white rounded-3xl shadow-sm p-5 border border-stone-100 flex flex-col justify-center items-center text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-orange-400 opacity-50"></div>
@@ -216,22 +194,17 @@
                     <p className="text-stone-500 text-xs font-medium mb-1">ต้นทุนวัตถุดิบ (Cost)</p>
                     <p className="text-2xl font-bold text-stone-800">฿{totalCost.toFixed(2)}</p>
                   </div>
-                  
                   <div className="bg-white rounded-3xl shadow-sm p-5 border border-stone-100 flex flex-col justify-center items-center text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-green-400 opacity-50"></div>
                     <i className="ph ph-percent text-2xl text-green-500 mb-2"></i>
                     <p className="text-stone-500 text-xs font-medium mb-1">มาร์จิ้น (Margin)</p>
                     <p className="text-2xl font-bold text-stone-800">{margin > 0 ? margin.toFixed(1) : 0}%</p>
                   </div>
-
-                  {/* กำไรสุทธิ */}
                   <div className="col-span-2 bg-gradient-to-br from-green-600 to-emerald-500 rounded-3xl shadow-md p-6 text-white relative overflow-hidden">
                     <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-10 flex justify-between items-center">
                       <div>
-                        <p className="text-green-50 text-sm font-medium flex items-center mb-1">
-                          <i className="ph ph-trend-up text-base mr-1.5"></i> กำไรสุทธิ (Net Profit)
-                        </p>
+                        <p className="text-green-50 text-sm font-medium flex items-center mb-1"><i className="ph ph-trend-up text-base mr-1.5"></i> กำไรสุทธิ (Net Profit)</p>
                         <p className="text-xs text-green-100/80">ต่อ 1 เสิร์ฟ</p>
                       </div>
                       <div className="text-right">
@@ -241,14 +214,11 @@
                   </div>
                 </div>
 
-                {/* จุดคุ้มทุน */}
                 <div className="bg-white rounded-[2rem] shadow-sm p-6 border border-stone-100 mt-2 relative overflow-hidden">
                    <div className="absolute left-0 top-0 w-1.5 h-full bg-blue-400"></div>
                   <div className="flex justify-between items-start mb-5 pl-2">
                     <div>
-                      <h3 className="text-stone-800 font-bold flex items-center text-lg">
-                        <i className="ph ph-target text-xl mr-1.5 text-blue-500"></i> เป้าหมายคืนทุน
-                      </h3>
+                      <h3 className="text-stone-800 font-bold flex items-center text-lg"><i className="ph ph-target text-xl mr-1.5 text-blue-500"></i> เป้าหมายคืนทุน</h3>
                       <p className="text-xs text-stone-500 mt-1">ยอดขายเพื่อคืนทุนค่าอุปกรณ์เบื้องต้น</p>
                     </div>
                   </div>
@@ -267,17 +237,13 @@
               </div>
             )}
 
-            {/* =======================
-                TAB 2: INGREDIENTS (ตู้เสบียง)
-                ======================= */}
+            {/* TAB 2: INGREDIENTS */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
                 <div className="flex justify-between items-end mb-2">
                   <div>
                     <h2 className="text-2xl font-black text-stone-800 tracking-tight">รายการวัตถุดิบ</h2>
-                    <p className="text-sm text-amber-700/80 font-medium flex items-center mt-1">
-                      <i className="ph ph-fork-knife text-base mr-1.5"></i> Pantry & Ingredients
-                    </p>
+                    <p className="text-sm text-amber-700/80 font-medium flex items-center mt-1"><i className="ph ph-fork-knife text-base mr-1.5"></i> Pantry & Ingredients</p>
                   </div>
                 </div>
 
@@ -285,8 +251,7 @@
                   <div key={idx} className="space-y-4">
                     <div className="flex justify-between items-center border-b-2 border-stone-200 pb-2 mt-8">
                       <h3 className="font-bold text-stone-700 text-lg flex items-center">
-                        <span className="w-2 h-6 bg-amber-500 rounded-full mr-2"></span>
-                        {category}
+                        <span className="w-2 h-6 bg-amber-500 rounded-full mr-2"></span> {category}
                       </h3>
                       <button onClick={() => addNewItem(category)} className="text-xs flex items-center text-amber-700 bg-amber-100 hover:bg-amber-200 transition-colors px-3 py-1.5 rounded-full font-bold shadow-sm">
                         <i className="ph ph-plus-circle text-sm mr-1"></i> เพิ่ม
@@ -299,66 +264,31 @@
                         <div key={item.id} className="bg-white p-5 rounded-3xl shadow-sm border border-stone-100 relative group">
                           <div className="flex justify-between items-start mb-4">
                             <div className="w-full pr-10">
-                              <input 
-                                type="text" 
-                                value={item.name} 
-                                onChange={(e) => handleInputChange(item.id, 'name', e.target.value)}
-                                className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none transition-colors"
-                                placeholder="ชื่อวัตถุดิบ"
-                              />
+                              <input type="text" value={item.name} onChange={(e) => handleInputChange(item.id, 'name', e.target.value)} className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none transition-colors" placeholder="ชื่อวัตถุดิบ" />
                               <div className="flex items-center mt-1">
                                 <i className="ph ph-info text-xs text-stone-400 mr-1"></i>
-                                <input 
-                                  type="text" 
-                                  value={item.spec} 
-                                  onChange={(e) => handleInputChange(item.id, 'spec', e.target.value)}
-                                  className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none"
-                                  placeholder="ยี่ห้อ/รายละเอียด"
-                                />
+                                <input type="text" value={item.spec} onChange={(e) => handleInputChange(item.id, 'spec', e.target.value)} className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-amber-400 focus:outline-none" placeholder="ยี่ห้อ/รายละเอียด" />
                               </div>
                             </div>
-                            <button onClick={() => deleteItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors p-1 bg-stone-50 rounded-full">
-                              <i className="ph ph-trash text-base"></i>
-                            </button>
+                            <button onClick={() => deleteItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors p-1 bg-stone-50 rounded-full"><i className="ph ph-trash text-base"></i></button>
                           </div>
-
                           <div className="grid grid-cols-2 gap-3 text-sm">
                             <div className="bg-[#FDF9F1] p-3 rounded-2xl border border-stone-100">
                               <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1">ราคาซื้อ (฿)</label>
-                              <input 
-                                type="number" 
-                                value={item.price} 
-                                onChange={(e) => handleInputChange(item.id, 'price', e.target.value)}
-                                className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
-                              />
+                              <input type="number" value={item.price} onChange={(e) => handleInputChange(item.id, 'price', e.target.value)} className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none" />
                             </div>
                             <div className="bg-[#FDF9F1] p-3 rounded-2xl border border-stone-100">
                               <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block mb-1">ปริมาณรวม</label>
                               <div className="flex items-center">
-                                <input 
-                                  type="number" 
-                                  value={item.totalQty} 
-                                  onChange={(e) => handleInputChange(item.id, 'totalQty', e.target.value)}
-                                  className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
-                                />
-                                <input 
-                                  type="text" 
-                                  value={item.unit} 
-                                  onChange={(e) => handleInputChange(item.id, 'unit', e.target.value)}
-                                  className="w-10 bg-transparent text-xs font-medium text-stone-500 text-right focus:outline-none"
-                                />
+                                <input type="number" value={item.totalQty} onChange={(e) => handleInputChange(item.id, 'totalQty', e.target.value)} className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none" />
+                                <input type="text" value={item.unit} onChange={(e) => handleInputChange(item.id, 'unit', e.target.value)} className="w-10 bg-transparent text-xs font-medium text-stone-500 text-right focus:outline-none" />
                               </div>
                             </div>
                             <div className="col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 p-3 rounded-2xl border border-amber-100/50 flex justify-between items-center">
                               <div>
                                 <label className="text-[10px] text-amber-700 font-bold uppercase tracking-wider block mb-1">ปริมาณที่ใช้ / เสิร์ฟ</label>
                                 <div className="flex items-center">
-                                  <input 
-                                    type="number" 
-                                    value={item.usedQty} 
-                                    onChange={(e) => handleInputChange(item.id, 'usedQty', e.target.value)}
-                                    className="w-20 bg-transparent font-black text-amber-600 text-xl focus:outline-none"
-                                  />
+                                  <input type="number" value={item.usedQty} onChange={(e) => handleInputChange(item.id, 'usedQty', e.target.value)} className="w-20 bg-transparent font-black text-amber-600 text-xl focus:outline-none" />
                                   <span className="text-sm font-medium text-amber-700/70">{item.unit}</span>
                                 </div>
                               </div>
@@ -376,17 +306,13 @@
               </div>
             )}
 
-            {/* =======================
-                TAB 3: EQUIPMENT (อุปกรณ์ครัว)
-                ======================= */}
+            {/* TAB 3: EQUIPMENT */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-6">
                   <div>
                     <h2 className="text-2xl font-black text-stone-800 tracking-tight">อุปกรณ์ครัว</h2>
-                    <p className="text-sm text-stone-500 font-medium flex items-center mt-1">
-                      <i className="ph ph-fire text-base mr-1.5 text-orange-500"></i> บันทึกเงินลงทุนหน้าเครื่อง
-                    </p>
+                    <p className="text-sm text-stone-500 font-medium flex items-center mt-1"><i className="ph ph-fire text-base mr-1.5 text-orange-500"></i> บันทึกเงินลงทุนหน้าเครื่อง</p>
                   </div>
                   <button onClick={addEquipItem} className="text-sm flex items-center text-white bg-stone-800 hover:bg-stone-700 transition-colors px-4 py-2 rounded-full font-bold shadow-md">
                     <i className="ph ph-plus-circle text-base mr-1.5"></i> เพิ่ม
@@ -399,24 +325,10 @@
                     <div key={item.id} className="bg-white p-5 rounded-3xl shadow-sm border border-stone-200 relative">
                       <div className="flex justify-between items-start mb-4">
                         <div className="w-full pr-10">
-                          <input 
-                            type="text" 
-                            value={item.name} 
-                            onChange={(e) => handleEquipChange(item.id, 'name', e.target.value)}
-                            className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none"
-                            placeholder="ชื่ออุปกรณ์"
-                          />
-                          <input 
-                            type="text" 
-                            value={item.spec} 
-                            onChange={(e) => handleEquipChange(item.id, 'spec', e.target.value)}
-                            className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none mt-1"
-                            placeholder="รายละเอียด"
-                          />
+                          <input type="text" value={item.name} onChange={(e) => handleEquipChange(item.id, 'name', e.target.value)} className="font-bold text-stone-800 text-lg w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none" placeholder="ชื่ออุปกรณ์" />
+                          <input type="text" value={item.spec} onChange={(e) => handleEquipChange(item.id, 'spec', e.target.value)} className="text-xs text-stone-500 w-full bg-transparent border-b border-dashed border-transparent focus:border-stone-400 focus:outline-none mt-1" placeholder="รายละเอียด" />
                         </div>
-                        <button onClick={() => deleteEquipItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors bg-stone-50 p-1.5 rounded-full">
-                          <i className="ph ph-trash text-base"></i>
-                        </button>
+                        <button onClick={() => deleteEquipItem(item.id)} className="absolute top-5 right-5 text-stone-300 hover:text-red-500 transition-colors bg-stone-50 p-1.5 rounded-full"><i className="ph ph-trash text-base"></i></button>
                       </div>
 
                       <div className="flex items-center justify-between bg-stone-50 p-3 rounded-2xl border border-stone-100">
@@ -424,24 +336,14 @@
                           <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">ราคา/ชิ้น</label>
                           <div className="flex items-center mt-1">
                             <span className="text-stone-400 mr-1 text-sm">฿</span>
-                            <input 
-                              type="number" 
-                              value={item.price} 
-                              onChange={(e) => handleEquipChange(item.id, 'price', e.target.value)}
-                              className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none"
-                            />
+                            <input type="number" value={item.price} onChange={(e) => handleEquipChange(item.id, 'price', e.target.value)} className="w-full bg-transparent font-black text-stone-700 text-lg focus:outline-none" />
                           </div>
                         </div>
                         <div className="flex-1 px-3">
                           <label className="text-[10px] text-stone-400 font-bold uppercase tracking-wider block">จำนวน</label>
                           <div className="flex items-center mt-1 text-stone-700">
                             <span className="text-sm mr-1 font-medium">x</span>
-                            <input 
-                              type="number" 
-                              value={item.qty} 
-                              onChange={(e) => handleEquipChange(item.id, 'qty', e.target.value)}
-                              className="w-full bg-transparent font-black text-lg focus:outline-none"
-                            />
+                            <input type="number" value={item.qty} onChange={(e) => handleEquipChange(item.id, 'qty', e.target.value)} className="w-full bg-transparent font-black text-lg focus:outline-none" />
                           </div>
                         </div>
                         <div className="flex-1 bg-stone-800 text-white p-2 rounded-xl text-right">
@@ -455,9 +357,7 @@
               </div>
             )}
 
-            {/* =======================
-                TAB 4: RECIPE (สมุดสูตรลับ - ละเอียดขั้นสุด SOP)
-                ======================= */}
+            {/* TAB 4: RECIPE (สมุดสูตรลับ) */}
             {activeTab === 'recipe' && (
               <div className="space-y-6 pt-2">
                 <div className="mb-6">
@@ -516,7 +416,7 @@
                     </div>
 
                     <div className="flex items-start">
-                      <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">4</span>
+                      <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">4</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1 flex items-center">
                           การต้มและการน็อก (สร้างความเหนียวหนึบ) <i className="ph ph-timer text-sm ml-1 text-stone-400"></i>
@@ -526,7 +426,21 @@
                           <li className="bg-red-50 text-red-800 p-2 rounded-lg font-semibold border border-red-100">ห้ามคนทันทีเด็ดขาด! ให้รอประมาณ 30 วินาที เพื่อให้แป้งเซตตัวรัดกล้วยก่อน ค่อยใช้กระชอนคนเบาๆ ไม่ให้ติดก้นหม้อ</li>
                           <li>ต้มไฟกลางค่อนแรง ประมาณ <span className="font-semibold">5-7 นาที</span> สังเกตว่าตัวแป้งจะสุกใสจนเห็นเนื้อกล้วยด้านใน และลอยขึ้นมาเหนือน้ำทั้งหมด</li>
                           <li>ใช้กระชอนตักขึ้น <span className="font-bold text-blue-600">น็อกในน้ำแข็งเย็นจัด 1 นาที</span> (ความเย็นเฉียบพลันจะทำให้แป้งรัดตัวและหนึบมาก)</li>
-                          <li>ตักกล้วยออกจากน้ำเย็น นำไปหล่อพักไว้ใน "น้ำเชื่อมอ่อนๆ" หรือ "น้ำต้มใบเตยอุ่นๆ" เพื่อไม่ให้กล้วยเกาะติดกันเป็นก้อนระหว่างรอเสิร์ฟ</li>
+                          <li>ตักกล้วยออกจากน้ำเย็น สะเด็ดน้ำเตรียมนำไปหล่อในน้ำเชื่อม (ตามขั้นตอนที่ 5)</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">5</span>
+                      <div className="w-full">
+                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การทำน้ำเชื่อมมะพร้าวน้ำหอม (เคล็ดลับความหอมลึก)</p>
+                        <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
+                          <li><b className="text-stone-800">การกรองสำคัญมาก:</b> นำน้ำมะพร้าวน้ำหอมแท้ <span className="font-semibold text-blue-600">500 ml</span> มากรองผ่าน <span className="font-bold text-red-500">ผ้าขาวบาง 2 ชั้น</span> เพื่อเอาเศษกะลาและใยมะพร้าวออกให้หมด (ถ้าน้ำไม่ใส กล้วยแก้วจะดูมัวและมีจุดดำเกาะ)</li>
+                          <li><b className="text-stone-800">อัตราส่วนต้ม:</b> น้ำมะพร้าวที่กรองแล้ว + น้ำตาลทรายขาว <span className="font-semibold text-amber-600">1-2 ช้อนโต๊ะ</span> (ลดลงเพราะน้ำมะพร้าวมีความหวานธรรมชาติ) + ใบเตยแก่ <span className="font-semibold text-green-600">2-3 ใบ</span> (ขยำแล้วมัดปม)</li>
+                          <li><b className="text-stone-800">วิธีต้ม:</b> ตั้งไฟให้เดือดจนกลิ่นใบเตยและมะพร้าวหอมฟุ้ง คนน้ำตาลให้ละลาย แล้ว<span className="font-bold text-red-500">ปิดเตาทันที</span></li>
+                          <li><b className="text-stone-800">การแช่หล่อ:</b> พักน้ำเชื่อมมะพร้าวให้อุณหภูมิลดลงเหลือแค่ <span className="font-semibold text-stone-800">"อุ่นๆ หรืออุณหภูมิห้อง"</span> จากนั้นนำกล้วยแก้วที่น็อกน้ำแข็งแล้ว เทลงไปแช่หล่อไว้</li>
+                          <li className="bg-yellow-50 text-yellow-800 p-3 rounded-lg font-semibold border border-yellow-200 mt-2">💡 <b className="uppercase">Chef's Secret:</b> แป้งมันและแป้งท้าวมีคุณสมบัติเหมือนฟองน้ำ เมื่อแช่ในน้ำมะพร้าวอุ่นๆ ตัวแป้งจะดูดซับความหอมหวานของมะพร้าวน้ำหอมเข้าไปกักเก็บไว้ เวลากัดกินจะได้กลิ่นหอมทะลุมิติจากข้างใน ลิงก์กับรสชาติซอสกะทิคาราเมลได้อย่างสมบูรณ์แบบครับ!</li>
                         </ul>
                       </div>
                     </div>
@@ -686,36 +600,24 @@
 
           </div>
 
-          {/* Bottom Navigation Bar - Cafe Style */}
+          {/* Bottom Navigation Bar */}
           <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-200 flex justify-between px-4 py-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 pb-safe rounded-t-3xl">
-            <button 
-              onClick={() => setActiveTab('dashboard')} 
-              className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'dashboard' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
-            >
+            <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'dashboard' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}>
               {activeTab === 'dashboard' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
               <i className={`text-2xl mb-1 ph ${activeTab === 'dashboard' ? 'ph-squares-four-fill' : 'ph-squares-four'}`}></i>
               <span className="text-[10px] font-bold tracking-wide">หน้าร้าน</span>
             </button>
-            <button 
-              onClick={() => setActiveTab('ingredients')} 
-              className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'ingredients' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
-            >
+            <button onClick={() => setActiveTab('ingredients')} className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'ingredients' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}>
               {activeTab === 'ingredients' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
               <i className={`text-2xl mb-1 ph ${activeTab === 'ingredients' ? 'ph-fork-knife-fill' : 'ph-fork-knife'}`}></i>
               <span className="text-[10px] font-bold tracking-wide">วัตถุดิบ</span>
             </button>
-            <button 
-              onClick={() => setActiveTab('equipment')} 
-              className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'equipment' ? 'text-orange-500' : 'text-stone-400 hover:text-orange-400'}`}
-            >
+            <button onClick={() => setActiveTab('equipment')} className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'equipment' ? 'text-orange-500' : 'text-stone-400 hover:text-orange-400'}`}>
                {activeTab === 'equipment' && <span className="absolute -top-3 w-8 h-1 bg-orange-500 rounded-full"></span>}
               <i className={`text-2xl mb-1 ph ${activeTab === 'equipment' ? 'ph-storefront-fill' : 'ph-storefront'}`}></i>
               <span className="text-[10px] font-bold tracking-wide">อุปกรณ์</span>
             </button>
-            <button 
-              onClick={() => setActiveTab('recipe')} 
-              className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'recipe' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}
-            >
+            <button onClick={() => setActiveTab('recipe')} className={`flex flex-col items-center w-1/4 py-1 relative transition-all ${activeTab === 'recipe' ? 'text-amber-600' : 'text-stone-400 hover:text-amber-500'}`}>
                {activeTab === 'recipe' && <span className="absolute -top-3 w-8 h-1 bg-amber-500 rounded-full"></span>}
               <i className={`text-2xl mb-1 ph ${activeTab === 'recipe' ? 'ph-book-open-fill' : 'ph-book-open'}`}></i>
               <span className="text-[10px] font-bold tracking-wide">สูตรลับ</span>
@@ -725,7 +627,6 @@
       );
     }
 
-    // เริ่มต้นแสดงผลแอปพลิเคชัน
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
