@@ -5,48 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>แก้วกล้วย Cost App</title>
 
-  <!-- นำเข้า Tailwind CSS สำหรับตกแต่งความสวยงาม -->
+  <!-- นำเข้า Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- นำเข้า React.js สำหรับระบบแอปพลิเคชัน -->
+  <!-- นำเข้า React.js -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-  <!-- นำเข้า Babel เพื่อแปลงโค้ดให้เบราว์เซอร์อ่านเข้าใจ -->
+  <!-- นำเข้า Babel -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- นำเข้า FontAwesome สำหรับไอคอน (เสถียร 100% บนหน้าเว็บจริง) -->
+  <!-- นำเข้า FontAwesome (ใช้ในหน้าเว็บจริง) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* ตั้งค่า CSS พื้นฐานสำหรับมือถือ */
-    body { 
-      background-color: #FDF9F1; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    .pb-safe { 
-      padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); 
-    }
-    /* ซ่อนลูกศรขึ้นลงในช่องใส่ตัวเลข */
+    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; }
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); }
     input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .strike-transition {
-      transition: all 0.2s ease-in-out;
-    }
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .strike-transition { transition: all 0.2s ease-in-out; }
   </style>
 </head>
 <body>
-  <!-- จุดที่แอปจะแสดงผล -->
   <div id="root"></div>
 
-  <!-- โค้ดหลักของแอปพลิเคชัน -->
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // ข้อมูลวัตถุดิบตั้งต้น
     const defaultItems = [
       { id: 1, category: '1. กล้วยแก้วใส 2 สี', name: 'กล้วยน้ำว้า (มะลิอ่อง)', spec: 'สวนชลบุรี/ฉะเชิงเทรา', price: 40, totalQty: 15, unit: 'ลูก', usedQty: 1.5, checked: false },
       { id: 2, category: '1. กล้วยแก้วใส 2 สี', name: 'แป้งมัน (เหรียญทองคู่)', spec: 'ถุง 500g', price: 35, totalQty: 500, unit: 'กรัม', usedQty: 30, checked: false },
@@ -82,7 +67,6 @@
     ];
 
     function App() {
-      // 1. ระบบโหลดข้อมูล (ป้องกันการล่มด้วย try-catch)
       const [sellingPrice, setSellingPrice] = useState(() => {
         try {
           const saved = localStorage.getItem('mj_price_final');
@@ -106,7 +90,6 @@
         } catch (e) { return defaultEquipments; }
       });
 
-      // 2. ระบบเซฟข้อมูลอัตโนมัติ
       useEffect(() => { 
         try { localStorage.setItem('mj_price_final', JSON.stringify(sellingPrice)); } catch (e) {}
       }, [sellingPrice]);
@@ -119,59 +102,57 @@
         try { localStorage.setItem('mj_equip_final', JSON.stringify(equipments)); } catch (e) {}
       }, [equipments]);
 
-      // 3. ฟังก์ชันจัดการข้อมูล
       const handleInputChange = (id, field, value) => {
-        setItems(items.map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
+        setItems((items || []).map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
       };
 
       const addNewItem = (category) => {
-        const newId = Math.max(0, ...items.map(i => i.id)) + 1;
-        setItems([...items, { id: newId, category: category, name: 'วัตถุดิบใหม่...', spec: 'รายละเอียด', price: 0, totalQty: 1, unit: 'หน่วย', usedQty: 0, checked: false }]);
+        const safeItems = items || [];
+        const newId = safeItems.length > 0 ? Math.max(...safeItems.map(i => i.id)) + 1 : 1;
+        setItems([...safeItems, { id: newId, category: category, name: 'วัตถุดิบใหม่...', spec: 'รายละเอียด', price: 0, totalQty: 1, unit: 'หน่วย', usedQty: 0, checked: false }]);
       };
 
-      const deleteItem = (id) => setItems(items.filter(item => item.id !== id));
+      const deleteItem = (id) => setItems((items || []).filter(item => item.id !== id));
 
       const handleEquipChange = (id, field, value) => {
-        setEquipments(equipments.map(item => item.id === id ? { ...item, [field]: ['name', 'spec'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
+        setEquipments((equipments || []).map(item => item.id === id ? { ...item, [field]: ['name', 'spec'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
       };
 
       const addEquipItem = () => {
-        const newId = Math.max(0, ...equipments.map(i => i.id)) + 1;
-        setEquipments([...equipments, { id: newId, name: 'อุปกรณ์ใหม่...', spec: 'รายละเอียด', price: 0, qty: 1, checked: false }]);
+        const safeEquips = equipments || [];
+        const newId = safeEquips.length > 0 ? Math.max(...safeEquips.map(i => i.id)) + 1 : 1;
+        setEquipments([...safeEquips, { id: newId, name: 'อุปกรณ์ใหม่...', spec: 'รายละเอียด', price: 0, qty: 1, checked: false }]);
       };
 
-      const deleteEquipItem = (id) => setEquipments(equipments.filter(item => item.id !== id));
+      const deleteEquipItem = (id) => setEquipments((equipments || []).filter(item => item.id !== id));
 
-      const toggleCheckItem = (id) => setItems(items.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
-      const toggleCheckEquip = (id) => setEquipments(equipments.map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+      const toggleCheckItem = (id) => setItems((items || []).map(item => item.id === id ? { ...item, checked: !item.checked } : item));
+      const toggleCheckEquip = (id) => setEquipments((equipments || []).map(item => item.id === id ? { ...item, checked: !item.checked } : item));
 
       const resetShoppingList = () => {
-        setItems(items.map(item => ({ ...item, checked: false })));
-        setEquipments(equipments.map(item => ({ ...item, checked: false })));
+        setItems((items || []).map(item => ({ ...item, checked: false })));
+        setEquipments((equipments || []).map(item => ({ ...item, checked: false })));
       };
 
-      // 4. ระบบคำนวณต้นทุน
       const calculateCost = (price, totalQty, usedQty) => (!price || !totalQty || !usedQty) ? 0 : (price / totalQty) * usedQty;
-      const totalCost = items.reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
+      const totalCost = (items || []).reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
       const profit = sellingPrice - totalCost;
       const margin = (profit / sellingPrice) * 100;
-      const totalEquipCost = equipments.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const totalEquipCost = (equipments || []).reduce((sum, item) => sum + (item.price * item.qty), 0);
       const breakEvenCups = profit > 0 ? Math.ceil(totalEquipCost / profit) : 0;
 
-      const groupedItems = items.reduce((acc, item) => {
+      const groupedItems = (items || []).reduce((acc, item) => {
         if (!acc[item.category]) acc[item.category] = [];
         acc[item.category].push(item);
         return acc;
       }, {});
 
-      const allShoppingItems = [...items, ...equipments];
+      const allShoppingItems = [...(items || []), ...(equipments || [])];
       const checkedCount = allShoppingItems.filter(item => item.checked).length;
       const progressPercent = allShoppingItems.length > 0 ? (checkedCount / allShoppingItems.length) * 100 : 0;
 
-      // 5. ส่วนแสดงผล (UI)
       return (
         <div className="min-h-screen bg-[#FDF9F1] pb-24 font-sans text-stone-800">
-          {/* ส่วนหัวแอป */}
           <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-[2rem]">
             <div className="flex justify-between items-center mb-1">
               <h1 className="text-xl font-bold flex items-center tracking-wide">
@@ -187,8 +168,6 @@
           </div>
 
           <div className="p-4 max-w-md mx-auto w-full">
-            
-            {/* TAB 1: DASHBOARD (ภาพรวมร้าน) */}
             {activeTab === 'dashboard' && (
               <div className="space-y-5 pt-2">
                 <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
@@ -256,7 +235,6 @@
               </div>
             )}
 
-            {/* TAB 2: INGREDIENTS (จัดการวัตถุดิบ) */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
                 <div className="flex justify-between items-end mb-2">
@@ -325,7 +303,6 @@
               </div>
             )}
 
-            {/* TAB 3: SHOPPING LIST (เช็กลิสต์จ่ายตลาด) */}
             {activeTab === 'shopping' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-4">
@@ -408,7 +385,6 @@
               </div>
             )}
 
-            {/* TAB 4: EQUIPMENT (อุปกรณ์) */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-6">
@@ -459,7 +435,6 @@
               </div>
             )}
 
-            {/* TAB 5: RECIPE (สมุดสูตรลับ) */}
             {activeTab === 'recipe' && (
               <div className="space-y-6 pt-2">
                 <div className="mb-6">
@@ -469,7 +444,6 @@
                   </p>
                 </div>
 
-                {/* ส่วนที่ 1: กล้วยแก้วใส */}
                 <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-2 h-full bg-yellow-400"></div>
                   <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between bg-yellow-50/50">
@@ -480,7 +454,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การคัดเลือกและเตรียมกล้วย</p>
+                        <p className="font-bold text-stone-800 mb-1">การคัดเลือกและเตรียมกล้วย</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li>ใช้กล้วยน้ำว้ามะลิอ่อง <span className="font-semibold text-stone-800">ความสุกระดับห่ามปนสุก</span> (เปลือกเหลืองแต่บีบแล้วยังแข็ง เนื้อในต้องไม่เละและไม่มีจุดดำ)</li>
                           <li>หั่นกล้วยเป็นลูกเต๋าขนาด <span className="font-semibold text-amber-700">1x1 ซม.</span> (ขนาดต้องเท่ากันเพื่อให้สุกพร้อมกัน)</li>
@@ -492,7 +466,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมแป้งและการเตรียมสี</p>
+                        <p className="font-bold text-stone-800 mb-1">การผสมแป้งและการเตรียมสี</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li><b className="text-stone-800">สูตรแป้ง:</b> ใช้แป้งมัน 300g ผสมแป้งท้าวยายม่อม 100g (คลุกเคล้าให้เป็นเนื้อเดียวกัน) แล้วแบ่งเป็น 2 กะละมัง (สำหรับสีขาวและสีม่วง)</li>
                           <li><b className="text-stone-800">การทำสีม่วงอัญชัน:</b> ใช้ดอกอัญชันแห้ง 10 ดอก แช่น้ำร้อน 1/2 ถ้วยตวง รอจนสีเข้ม กรองกากออก</li>
@@ -503,12 +477,12 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">เทคนิค "พรม-คลุก-ร่อน" (เคล็ดลับความกลมสวย)</p>
+                        <p className="font-bold text-stone-800 mb-1">เทคนิค "พรม-คลุก-ร่อน" (เคล็ดลับความกลมสวย)</p>
                         <ol className="list-decimal pl-4 space-y-1.5 mt-2 text-stone-600 text-[13px]">
                           <li>นำกล้วยที่สะเด็ดน้ำแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่ว</li>
                           <li><span className="text-amber-600 font-semibold">พรมน้ำ:</span> สเปรย์น้ำอัญชัน (หรือน้ำเปล่า) บางๆ ให้ทั่วตัวกล้วย (ห้ามเทพรวดเดียว เพราะจะกลายเป็นก้อนแป้งเปียก)</li>
                           <li>โรยแป้งทับลงไป แล้วใช้มือสองข้างจับกะละมัง "เขย่ากระดก" (Tossing) ให้แป้งกลิ้งไปเกาะกล้วย</li>
-                          <li>ทำซ้ำขั้นตอน (พรมน้ำ -&gt; โรยแป้ง -&gt; เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
+                          <li>ทำซ้ำขั้นตอน (พรมน้ำ ไป โรยแป้ง ไป เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
                           <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป "ร่อนผ่านกระชอนตาห่าง" เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
                         </ol>
                       </div>
@@ -516,7 +490,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">4</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1 flex items-center">
+                        <p className="font-bold text-stone-800 mb-1 flex items-center">
                           การต้มและการน็อก (สร้างความเหนียวหนึบ) <i className="fa-solid fa-stopwatch text-sm ml-1 text-stone-400"></i>
                         </p>
                         <ul className="list-disc pl-4 space-y-1.5 mt-2 text-stone-600 text-[13px]">
@@ -531,7 +505,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">5</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การทำน้ำเชื่อมมะพร้าวน้ำหอม (เคล็ดลับความหอมลึก)</p>
+                        <p className="font-bold text-stone-800 mb-1">การทำน้ำเชื่อมมะพร้าวน้ำหอม (เคล็ดลับความหอมลึก)</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li><b className="text-stone-800">การกรองสำคัญมาก:</b> นำน้ำมะพร้าวน้ำหอมแท้ <span className="font-semibold text-blue-600">500 ml</span> มากรองผ่าน <span className="font-bold text-red-500">ผ้าขาวบาง 2 ชั้น</span> เพื่อเอาเศษกะลาและใยมะพร้าวออกให้หมด</li>
                           <li><b className="text-stone-800">อัตราส่วนต้ม:</b> น้ำมะพร้าวที่กรองแล้ว + น้ำตาลทรายขาว <span className="font-semibold text-amber-600">1-2 ช้อนโต๊ะ</span> (ลดลงเพราะน้ำมะพร้าวมีความหวานธรรมชาติ) + ใบเตยแก่ <span className="font-semibold text-green-600">2-3 ใบ</span> (ขยำแล้วมัดปม)</li>
@@ -544,7 +518,6 @@
                   </div>
                 </div>
 
-                {/* ส่วนที่ 2: กะทิคาราเมล */}
                 <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-2 h-full bg-orange-500"></div>
                   <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between bg-orange-50/50">
@@ -555,7 +528,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1 flex items-center">
+                        <p className="font-bold text-stone-800 mb-1 flex items-center">
                           การเคี่ยวคาราเมลเบส <i className="fa-solid fa-fire text-sm ml-1 text-orange-500"></i>
                         </p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
@@ -568,7 +541,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมกะทิอัมพวาและแต่งกลิ่น</p>
+                        <p className="font-bold text-stone-800 mb-1">การผสมกะทิอัมพวาและแต่งกลิ่น</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li>นำใบเตยแก่สีเขียวเข้ม 3-4 ใบ ล้างสะอาดแล้ว <span className="font-semibold">ขยำเล็กน้อยให้ช้ำ</span> ก่อนมัดเป็นปม ใส่ลงในหม้อคาราเมล</li>
                           <li>เทหัวกะทิขวด Amphawa จำนวน <span className="font-semibold text-stone-800">250ml</span> ลงไป ใช้ตะกร้อมือคนให้กะทิและคาราเมลเข้ากันเป็นเนื้อเดียวอย่างรวดเร็ว</li>
@@ -578,7 +551,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การคุมไฟ และการใส่เนื้อมะพร้าวอ่อน</p>
+                        <p className="font-bold text-stone-800 mb-1">การคุมไฟ และการใส่เนื้อมะพร้าวอ่อน</p>
                         <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 mt-2">
                           <p className="text-orange-800 font-bold text-[12px] uppercase mb-1">⚠️ กฎเหล็ก: ห้ามกะทิแตกมัน</p>
                           <p className="text-[13px] text-stone-700">เลี้ยงไฟอ่อนสุด ห้ามให้กะทิเดือดพล่านเด็ดขาด ถ้ากะทิแตกมันลอยหน้าเป็นฝ้าน้ำมัน ซอสจะเลี่ยนและไม่เกาะตัวกล้วย</p>
@@ -592,7 +565,6 @@
                   </div>
                 </div>
 
-                {/* ส่วนที่ 3: ครัมเบิ้ล */}
                 <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-2 h-full bg-amber-700"></div>
                   <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between bg-amber-50/50">
@@ -603,14 +575,14 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การเตรียมกระทะและละลายเนย</p>
+                        <p className="font-bold text-stone-800 mb-1">การเตรียมกระทะและละลายเนย</p>
                         <p className="mt-2 text-stone-600 text-[13px] leading-relaxed">ใช้กระทะเทฟลอนหน้ากว้าง ตั้งไฟ <span className="font-bold text-red-500">"อ่อนที่สุด"</span> ใส่เนยสดจืด 30g ลงไป กลิ้งกระทะไปมา รอจนเนยละลายหมด</p>
                       </div>
                     </div>
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1 flex items-center">
+                        <p className="font-bold text-stone-800 mb-1 flex items-center">
                           อัตราส่วนและการคั่ว (Roasting) <i className="fa-solid fa-stopwatch text-sm ml-1 text-stone-400"></i>
                         </p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
@@ -623,7 +595,7 @@
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">เทคนิคไล่ความชื้น (เคล็ดลับความกรอบสูงสุด)</p>
+                        <p className="font-bold text-stone-800 mb-1">เทคนิคไล่ความชื้น (เคล็ดลับความกรอบสูงสุด)</p>
                         <div className="bg-amber-50 p-3 rounded-lg border border-amber-100 mt-2 text-[13px] text-stone-700">
                           <p>เมื่อมะพร้าวเริ่มเปลี่ยนเป็นสี <b>"เหลืองทองสว่าง" (Golden Brown)</b> ให้ <b>ปิดเตาทันที!</b></p>
                           <p className="mt-2 text-red-600 font-semibold">รีบเทมะพร้าวลงบนถาดกว้าง เกลี่ยให้กระจายตัว ห้ามทิ้งไว้ในกระทะเด็ดขาด เพราะจะไหม้ขม</p>
@@ -634,7 +606,6 @@
                   </div>
                 </div>
 
-                {/* ส่วนที่ 4: การจัดเสิร์ฟ */}
                 <div className="bg-stone-800 rounded-3xl shadow-lg border border-stone-700 overflow-hidden mb-6 text-stone-300 relative">
                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
                   <div className="px-5 py-4 border-b border-stone-700/50 flex items-center relative z-10">
