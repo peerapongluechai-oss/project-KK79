@@ -12,10 +12,10 @@
   <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 
-  <!-- นำเข้า Babel (ตัวแปลภาษาให้เบราว์เซอร์อ่าน React ออก) -->
+  <!-- นำเข้า Babel -->
   <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
 
-  <!-- นำเข้า FontAwesome Icons (สำหรับใช้งานบนเว็บจริง) -->
+  <!-- นำเข้า FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -47,7 +47,7 @@
   </style>
 </head>
 <body>
-  <!-- จุดที่แอปจะแสดงผล (มีหน้าจอโหลดดักไว้ก่อน หาก React ยังโหลดไม่เสร็จ) -->
+  <!-- จุดที่แอปจะแสดงผล -->
   <div id="root">
     <div id="loading-screen">
       <div class="spinner"></div>
@@ -94,10 +94,10 @@
     ];
 
     function App() {
-      // 1. ระบบโหลดข้อมูล (เปลี่ยนรหัสตัวแปรเป็น v6 เพื่อล้างความจำเก่าทั้งหมด)
+      // 1. ระบบโหลดข้อมูล (เปลี่ยนกุญแจเป็น v7)
       const [sellingPrice, setSellingPrice] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v6_price');
+          const saved = localStorage.getItem('mj_app_v7_price');
           return saved ? JSON.parse(saved) : 89; 
         } catch (e) { return 89; }
       });
@@ -106,7 +106,7 @@
       
       const [items, setItems] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v6_items');
+          const saved = localStorage.getItem('mj_app_v7_items');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultItems;
@@ -117,7 +117,7 @@
 
       const [equipments, setEquipments] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v6_equip');
+          const saved = localStorage.getItem('mj_app_v7_equip');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultEquipments;
@@ -128,15 +128,15 @@
 
       // 2. ระบบเซฟข้อมูลอัตโนมัติแบบปลอดภัย
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v6_price', JSON.stringify(sellingPrice)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_price', JSON.stringify(sellingPrice)); } catch (e) {}
       }, [sellingPrice]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v6_items', JSON.stringify(items)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_items', JSON.stringify(items)); } catch (e) {}
       }, [items]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v6_equip', JSON.stringify(equipments)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_equip', JSON.stringify(equipments)); } catch (e) {}
       }, [equipments]);
 
       // 3. ฟังก์ชันจัดการข้อมูล
@@ -500,6 +500,7 @@
                     <span className="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-1 rounded-full font-bold border border-yellow-200">หัวใจความหนึบ</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
+                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -508,34 +509,37 @@
                           <li>ใช้กล้วยน้ำว้ามะลิอ่อง <span className="font-semibold text-stone-800">ความสุกระดับห่ามปนสุก</span> (เปลือกเหลืองแต่บีบแล้วยังแข็ง เนื้อในต้องไม่เละและไม่มีจุดดำ)</li>
                           <li>หั่นกล้วยเป็นลูกเต๋าขนาด <span className="font-semibold text-amber-700">1x1 ซม.</span> (ขนาดต้องเท่ากันเพื่อให้สุกพร้อมกัน)</li>
                           <li>นำกล้วยไปแช่น้ำเกลือ (อัตราส่วน: น้ำ 1 ลิตร + เกลือ 1 ช้อนโต๊ะ) นาน <span className="font-semibold">15 นาที</span> เพื่อล้างยางไม่ให้กล้วยดำ และลดความฝาด</li>
-                          <li>ล้างด้วยน้ำเปล่าอีก 2 รอบ แล้วพักใส่ตะแกรงให้สะเด็ดน้ำ <span className="font-semibold text-red-500">100%</span> (ห้ามแฉะเด็ดขาด)</li>
+                          <li>ล้างด้วยน้ำเปล่าอีก 2 รอบ แล้วพักใส่ตะแกรงให้สะเด็ดน้ำ <span className="font-bold text-red-600">(สำคัญ: ต้องซับด้วยทิชชูทำอาหารให้แห้งหมาดที่สุด)</span> ห้ามแฉะเด็ดขาด ไม่งั้นแป้งจะเป็นก้อน</li>
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
-                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมแป้งและการเตรียมสี (Chef's Prep)</p>
+                        <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมแป้งและการเตรียมสี</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li><b className="text-stone-800">สูตรแป้ง:</b> ใช้แป้งมัน 300g ผสมแป้งท้าวยายม่อม 100g (คลุกเคล้าให้เป็นเนื้อเดียวกัน) แล้วแบ่งเป็น 2 กะละมัง (สำหรับสีขาวและสีม่วง)</li>
-                          <li><b className="text-stone-800">น้ำอัญชันสกัดเย็น (เทคนิคลดกลิ่นเหม็นเขียว):</b> ใช้ดอกอัญชันแห้ง 10-15 ดอก แช่ในน้ำร้อนจัด 1/2 ถ้วยตวง นาน 5 นาที <span className="text-red-500 font-bold">ห้ามต้มเดือดบนเตา</span> เพราะจะทำให้สีหมองและกลิ่นเหม็นเขียวออก กรองเอาแต่น้ำ</li>
-                          <li>นำน้ำอัญชัน และ น้ำเปล่า (สำหรับกล้วยสีขาว) ใส่ขวดสเปรย์ หรือถ้วยเล็กๆ เตรียมไว้สำหรับพรม</li>
+                          <li><b className="text-stone-800">การทำสีม่วงอัญชัน:</b> ใช้ดอกอัญชันแห้ง 10 ดอก <span className="font-semibold text-red-500">แช่ในน้ำร้อนจัด (ห้ามต้มเดือดบนเตา เพราะจะเหม็นเขียว)</span> รอจนสีเข้ม กรองกากออก</li>
+                          <li>นำน้ำอัญชันและน้ำเปล่า (สำหรับทำสีขาว) ใส่ขวดสเปรย์ หรือถ้วยเล็กๆ เตรียมไว้สำหรับพรม</li>
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">เทคนิค "พรม-คลุก-ร่อน" (เคล็ดลับความกลมสวย)</p>
                         <ol className="list-decimal pl-4 space-y-1.5 mt-2 text-stone-600 text-[13px]">
-                          <li>นำกล้วยที่สะเด็ดน้ำแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่ว</li>
+                          <li>นำกล้วยที่ซับแห้งแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่วในกะละมังผสม</li>
                           <li><span className="text-amber-600 font-semibold">พรมน้ำ:</span> สเปรย์น้ำอัญชัน (หรือน้ำเปล่า) บางๆ ให้ทั่วตัวกล้วย (ห้ามเทพรวดเดียว เพราะจะกลายเป็นก้อนแป้งเปียก)</li>
                           <li>โรยแป้งทับลงไป แล้วใช้มือสองข้างจับกะละมัง "เขย่ากระดก" (Tossing) ให้แป้งกลิ้งไปเกาะกล้วย</li>
                           <li>ทำซ้ำขั้นตอน (พรมน้ำ → โรยแป้ง → เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
-                          <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป "ร่อนผ่านกระชอนตาห่าง" เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
+                          <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป <span className="font-semibold">"ร่อนผ่านกระชอนตาห่าง"</span> เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
                         </ol>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">4</span>
                       <div className="w-full">
@@ -551,16 +555,17 @@
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">5</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การทำน้ำเชื่อมมะพร้าวน้ำหอม (เคล็ดลับความหอมลึก)</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
-                          <li><b className="text-stone-800">การกรองสำคัญมาก:</b> นำน้ำมะพร้าวน้ำหอมแท้ <span className="font-semibold text-blue-600">500 ml</span> มากรองผ่าน <span className="font-bold text-red-500">ผ้าขาวบาง 2 ชั้น</span> เพื่อเอาเศษกะลาและใยมะพร้าวออกให้หมด</li>
+                          <li><b className="text-stone-800">การกรองสำคัญมาก:</b> นำน้ำมะพร้าวน้ำหอมแท้ <span className="font-semibold text-blue-600">500 ml</span> มากรองผ่าน <span className="font-bold text-red-500">ผ้าขาวบาง 2 ชั้น</span> เพื่อเอาเศษกะลาและใยมะพร้าวออกให้หมด (ถ้าน้ำไม่ใส กล้วยแก้วจะดูมัวและมีจุดดำเกาะ)</li>
                           <li><b className="text-stone-800">อัตราส่วนต้ม:</b> น้ำมะพร้าวที่กรองแล้ว + น้ำตาลทรายขาว <span className="font-semibold text-amber-600">1-2 ช้อนโต๊ะ</span> (ลดลงเพราะน้ำมะพร้าวมีความหวานธรรมชาติ) + ใบเตยแก่ <span className="font-semibold text-green-600">2-3 ใบ</span> (ขยำแล้วมัดปม)</li>
                           <li><b className="text-stone-800">วิธีต้ม:</b> ตั้งไฟให้เดือดจนกลิ่นใบเตยและมะพร้าวหอมฟุ้ง คนน้ำตาลให้ละลาย แล้ว<span className="font-bold text-red-500">ปิดเตาทันที</span></li>
                           <li><b className="text-stone-800">การแช่หล่อ:</b> พักน้ำเชื่อมมะพร้าวให้อุณหภูมิลดลงเหลือแค่ <span className="font-semibold text-stone-800">"อุ่นๆ หรืออุณหภูมิห้อง"</span> จากนั้นนำกล้วยแก้วที่น็อกน้ำแข็งแล้ว เทลงไปแช่หล่อไว้</li>
-                          <li className="bg-yellow-50 text-yellow-800 p-3 rounded-lg font-semibold border border-yellow-200 mt-2">💡 <b className="uppercase">Chef's Secret:</b> แป้งมันและแป้งท้าวมีคุณสมบัติเหมือนฟองน้ำ เมื่อแช่ในน้ำมะพร้าวอุ่นๆ ตัวแป้งจะดูดซับความหอมหวานเข้าไป ทำให้เวลากัดกินจะได้กลิ่นหอมทะลุมิติจากข้างในครับ!</li>
+                          <li className="bg-yellow-50 text-yellow-800 p-3 rounded-lg font-semibold border border-yellow-200 mt-2">💡 <b className="uppercase">Chef's Secret:</b> แป้งมันและแป้งท้าวมีคุณสมบัติเหมือนฟองน้ำ เมื่อแช่ในน้ำมะพร้าวอุ่นๆ ตัวแป้งจะดูดซับความหอมหวานของมะพร้าวน้ำหอมเข้าไปกักเก็บไว้ เวลากัดกินจะได้กลิ่นหอมทะลุมิติจากข้างใน ลิงก์กับรสชาติซอสกะทิคาราเมลได้อย่างสมบูรณ์แบบครับ!</li>
                         </ul>
                       </div>
                     </div>
@@ -575,6 +580,7 @@
                     <span className="bg-orange-100 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold border border-orange-200">หอมละมุน</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
+                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -588,30 +594,33 @@
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมกะทิอัมพวาและแต่งกลิ่น</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
-                          <li>นำใบเตยแก่สีเขียวเข้ม 3-4 ใบ ล้างสะอาดแล้ว <span className="font-semibold">ขยำเล็กน้อยให้ช้ำ</span> ก่อนมัดเป็นปม ใส่ลงในหม้อคาราเมล</li>
+                          <li>นำใบเตยแก่สีเขียวเข้ม 3-4 ใบ ล้างสะอาดแล้ว <span className="font-semibold">ขยำเล็กน้อยให้ช้ำ</span> ก่อนมัดเป็นปม (การขยำจะทำให้น้ำมันหอมระเหยออกเต็มที่) ใส่ลงในหม้อคาราเมล</li>
                           <li>เทหัวกะทิขวด Amphawa จำนวน <span className="font-semibold text-stone-800">250ml</span> ลงไป ใช้ตะกร้อมือคนให้กะทิและคาราเมลเข้ากันเป็นเนื้อเดียวอย่างรวดเร็ว</li>
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การคุมไฟ และการใส่เนื้อมะพร้าวอ่อน</p>
                         <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 mt-2">
-                          <p className="text-orange-800 font-bold text-[12px] uppercase mb-1">⚠️ กฎเหล็ก: ห้ามกะทิแตกมัน</p>
-                          <p className="text-[13px] text-stone-700">เลี้ยงไฟอ่อนสุด ห้ามให้กะทิเดือดพล่านเด็ดขาด ถ้ากะทิแตกมันลอยหน้าเป็นฝ้าน้ำมัน ซอสจะเลี่ยนและไม่เกาะตัวกล้วย</p>
+                          <p className="text-orange-800 font-bold text-[12px] uppercase mb-1">⚠️ กฎเหล็ก: ห้ามกะทิแตกมัน และซับน้ำให้แห้ง</p>
+                          <p className="text-[13px] text-stone-700">เลี้ยงไฟอ่อนสุด ห้ามให้กะทิเดือดพล่านเด็ดขาด (สังเกตแค่ขอบหม้อมีฟองปุดเล็กๆ พอ) ถ้ากะทิแตกมัน ซอสจะเลี่ยนไม่เกาะกล้วย</p>
                         </div>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
-                          <li>นำเนื้อมะพร้าวอ่อนแช่แข็งเส้น (Makro) <span className="font-semibold text-red-500">ที่ละลายน้ำแข็งและสะเด็ดน้ำทิ้งจนหมด 100% แล้ว</span> ใส่ลงไป</li>
-                          <li>คนเบาๆ ให้เนื้อมะพร้าวดูดซับความร้อนประมาณ 1 นาที จากนั้น <span className="font-bold text-red-600">ปิดเตาทันที</span></li>
+                          <li>นำเนื้อมะพร้าวอ่อนแช่แข็งเส้น (Makro) <span className="font-bold text-red-600">ที่ละลายน้ำแข็งและบีบซับน้ำทิ้งจนแห้งสนิท 100% แล้ว</span> ใส่ลงไป (ห้ามใส่น้ำแข็งหรือน้ำมะพร้าวลงไปเด็ดขาด ซอสจะเจือจาง)</li>
+                          <li>คนเบาๆ ให้เนื้อมะพร้าวดูดซับความร้อนประมาณ 1 นาที จากนั้น <span className="font-bold text-red-600">ปิดเตาทันที</span> ยกลงจากเตารอเสิร์ฟ</li>
                         </ul>
                       </div>
                     </div>
+
                   </div>
                 </div>
 
@@ -619,17 +628,19 @@
                 <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-2 h-full bg-amber-700"></div>
                   <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between bg-amber-50/50">
-                    <h3 className="font-bold text-stone-800 text-lg ml-2">3. การทำซูเปอร์ครัมเบิ้ล (Topping)</h3>
-                    <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-1 rounded-full font-bold border border-amber-200">กรอบนาน + Healthy</span>
+                    <h3 className="font-bold text-stone-800 text-lg ml-2">3. การทำครัมเบิ้ลมะพร้าวคั่ว (Topping)</h3>
+                    <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-1 rounded-full font-bold border border-amber-200">กรอบนานข้ามสัปดาห์</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
+                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การเตรียมกระทะและละลายเนย</p>
-                        <p className="mt-2 text-stone-600 text-[13px] leading-relaxed">ใช้กระทะเทฟลอนหน้ากว้าง ตั้งไฟ <span className="font-bold text-red-500">"อ่อนที่สุด"</span> ใส่เนยสดจืด 30g ลงไป กลิ้งกระทะไปมา รอจนเนยละลายหมด</p>
+                        <p className="mt-2 text-stone-600 text-[13px] leading-relaxed">ใช้กระทะเทฟลอนหน้ากว้าง ตั้งไฟ <span className="font-bold text-red-500">"อ่อนที่สุด"</span> ใส่เนยสดจืด 30g ลงไป กลิ้งกระทะไปมา รอจนเนยละลายหมดและเริ่มส่งกลิ่นหอมสไตล์เบเกอรี</p>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
@@ -637,23 +648,25 @@
                           อัตราส่วนและการคั่ว (Roasting) <i className="fa-solid fa-stopwatch text-sm ml-1 text-stone-400"></i>
                         </p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
-                          <li>ใส่มะพร้าวอบแห้งแบบเส้น (Aro) <span className="font-semibold text-stone-800">200g</span> + อัลมอนด์สไลซ์อบ <span className="font-semibold text-stone-800">50g</span> + น้ำตาลทรายเกล็ดเล็ก <span className="font-semibold text-stone-800">2 ช้อนโต๊ะ</span> + เกลือป่น <span className="font-semibold text-stone-800">1/4 ช้อนชา</span></li>
-                          <li>ใช้พายซิลิโคนตะล่อมคลุกเคล้าให้เนยและน้ำตาลซึมเข้าไปเคลือบส่วนผสมให้ทั่ว</li>
-                          <li><b>คุมจังหวะการคน:</b> ต้องผัดและตะล่อมจากก้นกระทะขึ้นมา <span className="font-semibold">"ตลอดเวลา" (ห้ามหยุดมือ)</span> ใช้เวลาคั่วประมาณ 10-15 นาที</li>
+                          <li>ใส่มะพร้าวอบแห้งแบบเส้น (Aro) <span className="font-semibold text-stone-800">200g</span> + อัลมอนด์สไลซ์อบ <span className="font-semibold text-stone-800">50g</span> + น้ำตาลทรายเกล็ดเล็ก <span className="font-semibold text-stone-800">2 ช้อนโต๊ะ</span> + เกลือป่น <span className="font-semibold text-stone-800">1/4 ช้อนชา</span> ลงไปในกระทะ</li>
+                          <li>ใช้พายซิลิโคนตะล่อมคลุกเคล้าให้เนยและน้ำตาลซึมเข้าไปเคลือบเส้นมะพร้าวให้ทั่วทุกอณู</li>
+                          <li><b>คุมจังหวะการคน:</b> ต้องผัดและตะล่อมจากก้นกระทะขึ้นมา <span className="font-bold text-red-500">"ตลอดเวลา" (ห้ามหยุดมือ)</span> เพราะเส้นมะพร้าวจะไหม้ก้นกระทะได้ง่ายมาก ใช้เวลาคั่วประมาณ 10-15 นาที</li>
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">เทคนิคไล่ความชื้น (เคล็ดลับความกรอบสูงสุด)</p>
                         <div className="bg-amber-50 p-3 rounded-lg border border-amber-100 mt-2 text-[13px] text-stone-700">
-                          <p>เมื่อมะพร้าวเริ่มเปลี่ยนเป็นสี <b>"เหลืองทองสว่าง" (Golden Brown)</b> ให้ <b>ปิดเตาทันที!</b></p>
+                          <p>เมื่อมะพร้าวเริ่มเปลี่ยนเป็นสี <b>"เหลืองทองสว่าง" (Golden Brown)</b> ให้ <b>ปิดเตาทันที!</b> (ความร้อนสะสมในกระทะจะคั่วต่ออีกนิดหน่อย)</p>
                           <p className="mt-2 text-red-600 font-semibold">รีบเทมะพร้าวลงบนถาดกว้าง เกลี่ยให้กระจายตัว ห้ามทิ้งไว้ในกระทะเด็ดขาด เพราะจะไหม้ขม</p>
-                          <p className="mt-2"><b>การจัดเก็บ:</b> ปล่อยให้เย็นสนิท <span className="font-bold text-stone-900">100% (เอามือจับต้องไม่เหลือความอุ่น)</span> จึงเก็บใส่กระปุกสุญญากาศ พร้อมใส่ซองกันชื้น</p>
+                          <p className="mt-2"><b>การจัดเก็บ:</b> ปล่อยให้ครัมเบิ้ลเย็นสนิทในอุณหภูมิห้อง <span className="font-bold text-stone-900">100% (เอามือจับต้องไม่เหลือความอุ่น)</span> จึงเก็บใส่กระปุกสุญญากาศ พร้อมใส่ซองกันชื้น เพื่อรักษาความกรอบข้ามสัปดาห์</p>
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
 
@@ -665,53 +678,48 @@
                     <h3 className="font-bold text-white text-lg">4. เทคนิคการจัดจาน (Plating Art)</h3>
                   </div>
                   <div className="p-5 space-y-5 text-sm relative z-10 bg-stone-800">
+                    
                     <div className="bg-stone-700/50 p-4 rounded-2xl border border-stone-600 inline-block w-full">
                       <p className="text-stone-400 text-[11px] uppercase tracking-wider font-bold mb-1">ภาชนะมาตรฐานที่ใช้เสิร์ฟ</p>
-                      <p className="text-white font-bold text-base">ถ้วยพลาสติกใสทรงตื้นกว้าง (Dessert Bowl) พร้อมฝาโดม</p>
-                    </div>
-                    
-                    {/* เพิ่มเติมเรื่องการคุมอุณหภูมิ (Temperature Control) */}
-                    <div className="bg-amber-900/40 p-4 rounded-2xl border border-amber-700/50 mt-4">
-                      <p className="text-amber-400 text-[12px] uppercase font-bold mb-2 flex items-center">
-                        <i className="fa-solid fa-thermometer-half mr-1.5"></i> Chef's Secret: อุณหภูมิการเสิร์ฟ (Hot meets Cold)
-                      </p>
-                      <p className="text-stone-300 text-[13px] leading-relaxed">
-                        หัวใจของเมนูนี้คือความแตกต่างของอุณหภูมิ ซอสกะทิคาราเมลควรถูกอุ่นไว้ใน <b>"หม้ออุ่นซุป (Soup Warmer)" ที่อุณหภูมิประมาณ 60°C</b> (อุ่นร้อน แต่ไม่เดือด) ความร้อนระดับนี้จะช่วยดึงกลิ่นกะทิให้หอมฟุ้ง และเมื่อราดลงไป จะทำให้กล้วยแก้วที่แช่อยู่ในอุณหภูมิห้องนุ่มขึ้นทันที แต่ต้องไม่ร้อนจัดจนไอศกรีมละลายเป็นน้ำในพริบตา
-                      </p>
+                      <p className="text-white font-bold text-base">ถ้วยพลาสติกใสทรงตื้นกว้าง (Dessert Bowl 300-400ml) พร้อมฝาโดม</p>
                     </div>
 
-                    <ul className="list-none space-y-5 text-[13px] mt-4">
+                    <ul className="list-none space-y-5 text-[13px]">
                       <li className="flex items-start">
                         <div className="w-5 h-5 rounded-full bg-stone-600 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-stone-500">1</div>
                         <div>
                           <p className="font-bold text-white text-sm mb-0.5">Base Layer (สร้างฐานอัญมณี)</p>
-                          <p className="text-stone-300 leading-relaxed">ตักกล้วยแก้วสีขาวและสีม่วงอัญชัน (สะเด็ดน้ำเชื่อมออกเล็กน้อย) <span className="text-amber-400">จัดวางกระจายสลับสีกันให้เต็มก้นถ้วย</span></p>
+                          <p className="text-stone-300 leading-relaxed">ใช้ช้อนตวงมาตรฐานตัก <span className="font-semibold text-white">กล้วยแก้วสีขาว 1 ช้อนโต๊ะพูน (9-10 ชิ้น)</span> และ <span className="font-semibold text-white">สีม่วง 1 ช้อนโต๊ะพูน (9-10 ชิ้น)</span> รวม 18-20 ชิ้น/ถ้วย <span className="text-amber-400">จัดวางกระจายสลับสีกันให้เต็มก้นถ้วย</span></p>
                         </div>
                       </li>
+
                       <li className="flex items-start">
                         <div className="w-5 h-5 rounded-full bg-stone-600 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-stone-500">2</div>
                         <div>
                           <p className="font-bold text-white text-sm mb-0.5">Sauce Layer (สระคาราเมลทองคำ)</p>
-                          <p className="text-stone-300 leading-relaxed">ตักซอสกะทิคาราเมลอุ่นๆ พร้อมเนื้อมะพร้าวอ่อน ราดลงไปให้ท่วมตัวกล้วยแก้วแบบขลุกขลิก (ให้ซอสแผ่เป็นวงกลมรอบถ้วย)</p>
+                          <p className="text-stone-300 leading-relaxed">ตักซอสกะทิคาราเมล<span className="font-semibold text-amber-400">อุ่นๆ (Warm)</span> พร้อมเนื้อมะพร้าวอ่อน <span className="font-semibold text-white">ประมาณ 1.5 - 2 ทัพพี</span> ราดลงไปให้ท่วมตัวกล้วยแก้วแบบขลุกขลิก (ความอุ่นของกะทิจะช่วยชูความหอมเมื่อเปิดฝา และตัดกับไอศกรีมเย็นๆ)</p>
                         </div>
                       </li>
+
                       <li className="flex items-start">
                         <div className="w-5 h-5 rounded-full bg-stone-600 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-stone-500">3</div>
                         <div>
                           <p className="font-bold text-white text-sm mb-0.5">The Star (พระเอกของจาน)</p>
-                          <p className="text-stone-300 leading-relaxed">ตักไอศกรีมกะทิสด 1 สกู๊ปใหญ่ (ตักให้กลมแน่น) <span className="font-semibold text-white">วางตระหง่านไว้ตรงกลางถ้วย เหนือสระคาราเมล</span></p>
+                          <p className="text-stone-300 leading-relaxed">ตักไอศกรีมกะทิสด 1 สกู๊ปใหญ่ <span className="text-stone-400">(แนะนำที่ตักไอศกรีมเบอร์ 12 หรือ 16)</span> <span className="font-semibold text-white">วางตระหง่านไว้ตรงกลางถ้วย เหนือสระคาราเมล</span></p>
                         </div>
                       </li>
+
                       <li className="flex items-start">
                         <div className="w-5 h-5 rounded-full bg-stone-600 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-stone-500">4</div>
                         <div>
-                          <p className="font-bold text-white text-sm mb-0.5">Finishing Touch (อวดความเป็น Healthy)</p>
-                          <p className="text-stone-300 leading-relaxed">ตักซูเปอร์ครัมเบิ้ล 1 ช้อนโต๊ะ <span className="text-amber-400 font-semibold">โรยรอบๆ ฐานไอศกรีม (ระวังอย่าให้จมซอสกะทิ) และโรยบนยอดไอศกรีมเล็กน้อย</span> ปิดฝาโดม เสิร์ฟทันที!</p>
+                          <p className="font-bold text-white text-sm mb-0.5">Finishing Touch (ปิดท้ายเพิ่มมิติ)</p>
+                          <p className="text-stone-300 leading-relaxed">ตักครัมเบิ้ลมะพร้าวคั่ว 1 ช้อนโต๊ะ <span className="text-amber-400 font-semibold">โรยรอบๆ ฐานไอศกรีม (ที่แห้ง) และโรยทับบนยอดไอศกรีมเล็กน้อย</span> (ห้ามโรยแช่ลงไปในซอสกะทิ เพราะครัมเบิ้ลจะเปียกและหมดความกรอบ) ปิดฝาโดม เสิร์ฟพร้อมช้อนพรีเมียมทันที!</p>
                         </div>
                       </li>
                     </ul>
                   </div>
                 </div>
+
               </div>
             )}
 
