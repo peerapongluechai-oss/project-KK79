@@ -281,6 +281,7 @@
               </div>
             )}
 
+            {}
             {/* TAB 2: INGREDIENTS */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
@@ -350,6 +351,7 @@
               </div>
             )}
 
+            {}
             {/* TAB 3: SHOPPING LIST */}
             {activeTab === 'shopping' && (
               <div className="space-y-5 pt-2">
@@ -433,6 +435,7 @@
               </div>
             )}
 
+            {}
             {/* TAB 4: EQUIPMENT */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
@@ -484,6 +487,7 @@
               </div>
             )}
 
+            {}
             {/* TAB 5: RECIPE (สมุดสูตรลับ) */}
             {activeTab === 'recipe' && (
               <div className="space-y-6 pt-2">
@@ -659,7 +663,7 @@
                   </div>
                 </div>
 
-                {/* ส่วนที่ 4: การจัดเสิร์ฟ */}
+                {/* ส่วนที่ 4: การจัดเสิร์ฟ (หน้าร้าน) */}
                 <div className="bg-stone-800 rounded-3xl shadow-lg border border-stone-700 overflow-hidden mb-6 text-stone-300 relative">
                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
                   <div className="px-5 py-4 border-b border-stone-700/50 flex items-center relative z-10">
@@ -709,7 +713,7 @@
                   </div>
                 </div>
 
-                {/* ส่วนที่ 5: การจัดเสิร์ฟออนไลน์ */}
+                {/* ส่วนที่ 5: การจัดเสิร์ฟออนไลน์ (NEW) */}
                 <div className="bg-blue-800 rounded-3xl shadow-lg border border-blue-700 overflow-hidden mb-6 text-blue-100 relative">
                    <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
                   <div className="px-5 py-4 border-b border-blue-700/50 flex items-center relative z-10">
@@ -759,6 +763,7 @@
 
           </div>
 
+          {}
           {/* Bottom Navigation Bar */}
           <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 flex justify-between px-2 py-2 shadow-[0_-10px_30px_rgba(0,0,0,0.06)] z-20 pb-safe rounded-t-2xl">
             <button onClick={() => setActiveTab('dashboard')} className={`flex flex-col items-center w-1/5 py-1.5 relative transition-all ${activeTab === 'dashboard' ? 'text-amber-600 scale-105' : 'text-stone-400 hover:text-amber-500'}`}>
