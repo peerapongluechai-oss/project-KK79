@@ -8,18 +8,18 @@
   <!-- นำเข้า Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- เปลี่ยนมาใช้ cdnjs เพื่อความเร็วและเสถียรสูงสุดในไทย -->
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <!-- นำเข้า React.js -->
+  <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 
-  <!-- นำเข้า Babel สำหรับแปลภาษาโค้ด -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+  <!-- นำเข้า Babel (ตัวแปลภาษาให้เบราว์เซอร์อ่าน React ออก) -->
+  <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
 
-  <!-- นำเข้า FontAwesome Icons -->
+  <!-- นำเข้า FontAwesome Icons (สำหรับใช้งานบนเว็บจริง) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; font-family: sans-serif;}
+    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; font-family: sans-serif; }
     .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -47,7 +47,7 @@
   </style>
 </head>
 <body>
-  <!-- จุดที่แอปจะแสดงผล -->
+  <!-- จุดที่แอปจะแสดงผล (มีหน้าจอโหลดดักไว้ก่อน หาก React ยังโหลดไม่เสร็จ) -->
   <div id="root">
     <div id="loading-screen">
       <div class="spinner"></div>
@@ -55,17 +55,6 @@
       <p style="font-size: 0.8rem; color: #78716c; margin-top: 8px;">หากค้างเกิน 5 วินาที กรุณารีเฟรชหน้าเว็บ</p>
     </div>
   </div>
-
-  <!-- ระบบเรดาร์จับบั๊ก: ถ้าพังจะโชว์หน้าจอสีแดงทันที -->
-  <script>
-    window.onerror = function(message, source, lineno, colno, error) {
-      var spinner = document.getElementById('loading-screen');
-      if (spinner) {
-        spinner.innerHTML = '<div style="color: #dc2626; padding: 20px; text-align: center;"><i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; margin-bottom: 16px;"></i><h2 style="font-weight: bold; font-size: 1.2rem;">โอ๊ะ! เกิดข้อผิดพลาด</h2><p style="font-size: 0.8rem; margin-top: 8px; word-break: break-word;">' + message + '</p><p style="font-size: 0.7rem; color: #78716c; margin-top: 8px;">กรุณาแคปหน้าจอนี้ส่งให้โค้ชดูครับ</p></div>';
-      }
-      return false;
-    };
-  </script>
 
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -89,16 +78,10 @@
       { id: 12, category: '3. ซูเปอร์ครัมเบิ้ลคั่ว', name: 'เนยสดจืด', spec: 'Allowrie (227g)', price: 120, totalQty: 227, unit: 'กรัม', usedQty: 2, checked: false },
       { id: 13, category: '3. ซูเปอร์ครัมเบิ้ลคั่ว', name: 'น้ำตาลทรายเกล็ดเล็ก', spec: 'มิตรผล', price: 25, totalQty: 1000, unit: 'กรัม', usedQty: 2, checked: false },
       
-      { id: 14, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ไอศกรีมกะทิสด (Dairy-Free)', spec: 'ถัง 3kg (~60 Scoop)', price: 350, totalQty: 60, unit: 'สกู๊ป', usedQty: 1, checked: false },
-      { id: 15, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ถ้วยพลาสติกใสทรงแบน', spec: 'พร้อมฝาโดม (50 ชุด)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
-      { id: 16, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ช้อนตักขนม', spec: 'สีดำพรีเมียม (50 คัน)', price: 40, totalQty: 50, unit: 'คัน', usedQty: 1, checked: false },
-      { id: 17, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'สติกเกอร์โลโก้', spec: 'สั่งทำ (100 ดวง)', price: 50, totalQty: 100, unit: 'ดวง', usedQty: 1, checked: false },
-      
-      // เพิ่มหมวดหมู่ Delivery
-      { id: 20, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถ้วยพลาสติก PP 12oz', spec: 'ชามใส่กล้วย+ซอส พร้อมฝา (50ชุด)', price: 120, totalQty: 50, unit: 'ชุด', usedQty: 1, checked: false },
-      { id: 21, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถ้วยไอศกรีมกระดาษคราฟท์', spec: 'ขนาด 4oz พร้อมฝา (50ชุด)', price: 145, totalQty: 50, unit: 'ชุด', usedQty: 1, checked: false },
-      { id: 22, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'กระปุกน้ำจิ้ม 1oz', spec: 'ฝาพับในตัว (ใส่ครัมเบิ้ล)', price: 40, totalQty: 100, unit: 'ใบ', usedQty: 1, checked: false },
-      { id: 23, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถุงกระดาษคราฟท์หูหิ้ว', spec: 'ไซส์จัดเบรก (50 ใบ)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
+      { id: 14, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ไอศกรีมกะทิสด (Dairy-Free)', spec: 'ถัง 3kg (~60 Scoop)', price: 350, totalQty: 60, unit: 'สกู๊ป', usedQty: 1, checked: false },
+      { id: 15, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ถ้วยพลาสติกใสทรงแบน', spec: 'พร้อมฝาโดม (50 ชุด)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
+      { id: 16, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ช้อนตักขนม', spec: 'สีดำพรีเมียม (50 คัน)', price: 40, totalQty: 50, unit: 'คัน', usedQty: 1, checked: false },
+      { id: 17, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'สติกเกอร์โลโก้', spec: 'สั่งทำ (100 ดวง)', price: 50, totalQty: 100, unit: 'ดวง', usedQty: 1, checked: false },
     ];
 
     const defaultEquipments = [
@@ -113,10 +96,10 @@
     ];
 
     function App() {
-      // เปลี่ยนรหัสตัวแปรเป็น v7
+      // 1. ระบบโหลดข้อมูล (เปลี่ยนรหัสตัวแปรเป็น v7 เพื่อล้างความจำเก่าทั้งหมด)
       const [sellingPrice, setSellingPrice] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_price_v7');
+          const saved = localStorage.getItem('mj_app_v7_price');
           return saved ? JSON.parse(saved) : 89; 
         } catch (e) { return 89; }
       });
@@ -125,7 +108,7 @@
       
       const [items, setItems] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_items_v7');
+          const saved = localStorage.getItem('mj_app_v7_items');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultItems;
@@ -136,7 +119,7 @@
 
       const [equipments, setEquipments] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_equip_v7');
+          const saved = localStorage.getItem('mj_app_v7_equip');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultEquipments;
@@ -145,18 +128,20 @@
         } catch (e) { return defaultEquipments; }
       });
 
+      // 2. ระบบเซฟข้อมูลอัตโนมัติแบบปลอดภัย
       useEffect(() => { 
-        try { localStorage.setItem('mj_price_v7', JSON.stringify(sellingPrice)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_price', JSON.stringify(sellingPrice)); } catch (e) {}
       }, [sellingPrice]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_items_v7', JSON.stringify(items)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_items', JSON.stringify(items)); } catch (e) {}
       }, [items]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_equip_v7', JSON.stringify(equipments)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v7_equip', JSON.stringify(equipments)); } catch (e) {}
       }, [equipments]);
 
+      // 3. ฟังก์ชันจัดการข้อมูล
       const handleInputChange = (id, field, value) => {
         setItems((items || []).map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
       };
@@ -189,6 +174,7 @@
         setEquipments((equipments || []).map(item => ({ ...item, checked: false })));
       };
 
+      // 4. ระบบคำนวณต้นทุน
       const calculateCost = (price, totalQty, usedQty) => (!price || !totalQty || !usedQty) ? 0 : (price / totalQty) * usedQty;
       const totalCost = (items || []).reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
       const profit = sellingPrice - totalCost;
@@ -207,8 +193,10 @@
       const checkedCount = allShoppingItems.filter(item => item && item.checked).length;
       const progressPercent = allShoppingItems.length > 0 ? (checkedCount / allShoppingItems.length) * 100 : 0;
 
+      // 5. ส่วนแสดงผล (UI)
       return (
         <div className="min-h-screen bg-[#FDF9F1] pb-24 font-sans text-stone-800">
+          {/* ส่วนหัวแอป */}
           <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-[2rem]">
             <div className="flex justify-between items-center mb-1">
               <h1 className="text-xl font-bold flex items-center tracking-wide">
@@ -225,7 +213,7 @@
 
           <div className="p-4 max-w-md mx-auto w-full">
             
-            {/* TAB 1: DASHBOARD */}
+            {/* TAB 1: DASHBOARD (ภาพรวมร้าน) */}
             {activeTab === 'dashboard' && (
               <div className="space-y-5 pt-2">
                 <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
@@ -293,7 +281,7 @@
               </div>
             )}
 
-            {/* TAB 2: INGREDIENTS */}
+            {/* TAB 2: INGREDIENTS (จัดการวัตถุดิบ) */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
                 <div className="flex justify-between items-end mb-2">
@@ -362,7 +350,7 @@
               </div>
             )}
 
-            {/* TAB 3: SHOPPING LIST */}
+            {/* TAB 3: SHOPPING LIST (เช็กลิสต์จ่ายตลาด) */}
             {activeTab === 'shopping' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-4">
@@ -445,7 +433,7 @@
               </div>
             )}
 
-            {/* TAB 4: EQUIPMENT */}
+            {/* TAB 4: EQUIPMENT (อุปกรณ์) */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-6">
@@ -522,7 +510,7 @@
                           <li>ใช้กล้วยน้ำว้ามะลิอ่อง <span className="font-semibold text-stone-800">ความสุกระดับห่ามปนสุก</span> (เปลือกเหลืองแต่บีบแล้วยังแข็ง เนื้อในต้องไม่เละและไม่มีจุดดำ)</li>
                           <li>หั่นกล้วยเป็นลูกเต๋าขนาด <span className="font-semibold text-amber-700">1x1 ซม.</span> (ขนาดต้องเท่ากันเพื่อให้สุกพร้อมกัน)</li>
                           <li>นำกล้วยไปแช่น้ำเกลือ (อัตราส่วน: น้ำ 1 ลิตร + เกลือ 1 ช้อนโต๊ะ) นาน <span className="font-semibold">15 นาที</span> เพื่อล้างยางไม่ให้กล้วยดำ และลดความฝาด</li>
-                          <li>ล้างด้วยน้ำเปล่าอีก 2 รอบ แล้วพักใส่ตะแกรงให้สะเด็ดน้ำ <span className="font-bold text-red-600">(สำคัญ: ต้องซับด้วยทิชชูทำอาหารให้แห้งหมาดที่สุด)</span> ห้ามแฉะเด็ดขาด ไม่งั้นแป้งจะเป็นก้อน</li>
+                          <li>ล้างด้วยน้ำเปล่าอีก 2 รอบ แล้วพักใส่ตะแกรงให้สะเด็ดน้ำ <span className="font-semibold text-red-500">100%</span> (ห้ามแฉะเด็ดขาด)</li>
                         </ul>
                       </div>
                     </div>
@@ -532,7 +520,7 @@
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การผสมแป้งและการเตรียมสี</p>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                           <li><b className="text-stone-800">สูตรแป้ง:</b> ใช้แป้งมัน 300g ผสมแป้งท้าวยายม่อม 100g (คลุกเคล้าให้เป็นเนื้อเดียวกัน) แล้วแบ่งเป็น 2 กะละมัง (สำหรับสีขาวและสีม่วง)</li>
-                          <li><b className="text-stone-800">การทำสีม่วงอัญชัน:</b> ใช้ดอกอัญชันแห้ง 10 ดอก <span className="font-semibold text-red-500">แช่ในน้ำร้อนจัด (ห้ามต้มเดือดบนเตา เพราะจะเหม็นเขียว)</span> รอจนสีเข้ม กรองกากออก</li>
+                          <li><b className="text-stone-800">การทำสีม่วงอัญชัน:</b> ใช้ดอกอัญชันแห้ง 10 ดอก แช่น้ำร้อน 1/2 ถ้วยตวง รอจนสีเข้ม กรองกากออก</li>
                           <li>นำน้ำอัญชันและน้ำเปล่า (สำหรับทำสีขาว) ใส่ขวดสเปรย์ หรือถ้วยเล็กๆ เตรียมไว้สำหรับพรม</li>
                         </ul>
                       </div>
@@ -542,11 +530,11 @@
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">เทคนิค "พรม-คลุก-ร่อน" (เคล็ดลับความกลมสวย)</p>
                         <ol className="list-decimal pl-4 space-y-1.5 mt-2 text-stone-600 text-[13px]">
-                          <li>นำกล้วยที่ซับแห้งแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่วในกะละมังผสม</li>
+                          <li>นำกล้วยที่สะเด็ดน้ำแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่ว</li>
                           <li><span className="text-amber-600 font-semibold">พรมน้ำ:</span> สเปรย์น้ำอัญชัน (หรือน้ำเปล่า) บางๆ ให้ทั่วตัวกล้วย (ห้ามเทพรวดเดียว เพราะจะกลายเป็นก้อนแป้งเปียก)</li>
                           <li>โรยแป้งทับลงไป แล้วใช้มือสองข้างจับกะละมัง "เขย่ากระดก" (Tossing) ให้แป้งกลิ้งไปเกาะกล้วย</li>
                           <li>ทำซ้ำขั้นตอน (พรมน้ำ → โรยแป้ง → เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
-                          <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป <span className="font-semibold">"ร่อนผ่านกระชอนตาห่าง"</span> เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
+                          <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป "ร่อนผ่านกระชอนตาห่าง" เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
                         </ol>
                       </div>
                     </div>
@@ -617,11 +605,11 @@
                       <div className="w-full">
                         <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การคุมไฟ และการใส่เนื้อมะพร้าวอ่อน</p>
                         <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 mt-2">
-                          <p className="text-orange-800 font-bold text-[12px] uppercase mb-1">⚠️ กฎเหล็ก: ห้ามกะทิแตกมัน และซับน้ำให้แห้ง</p>
-                          <p className="text-[13px] text-stone-700">เลี้ยงไฟอ่อนสุด ห้ามให้กะทิเดือดพล่านเด็ดขาด (สังเกตแค่ขอบหม้อมีฟองปุดเล็กๆ พอ) ถ้ากะทิแตกมัน ซอสจะเลี่ยนไม่เกาะกล้วย</p>
+                          <p className="text-orange-800 font-bold text-[12px] uppercase mb-1">⚠️ กฎเหล็ก: ห้ามกะทิแตกมัน</p>
+                          <p className="text-[13px] text-stone-700">เลี้ยงไฟอ่อนสุด ห้ามให้กะทิเดือดพล่านเด็ดขาด (สังเกตแค่ขอบหม้อมีฟองปุดเล็กๆ พอ) ถ้ากะทิแตกมันลอยหน้าเป็นฝ้าน้ำมัน ซอสจะเลี่ยนและไม่เกาะตัวกล้วย</p>
                         </div>
                         <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
-                          <li>นำเนื้อมะพร้าวอ่อนแช่แข็งเส้น (Makro) <span className="font-bold text-red-600">ที่ละลายน้ำแข็งและบีบซับน้ำทิ้งจนแห้งสนิท 100% แล้ว</span> ใส่ลงไป (ห้ามใส่น้ำแข็งหรือน้ำมะพร้าวลงไปเด็ดขาด ซอสจะเจือจาง)</li>
+                          <li>นำเนื้อมะพร้าวอ่อนแช่แข็งเส้น (Makro) <span className="font-semibold text-red-500">ที่ละลายน้ำแข็งและสะเด็ดน้ำทิ้งจนหมด 100% แล้ว</span> ใส่ลงไป (ห้ามใส่น้ำแข็งลงไปเด็ดขาด ซอสจะเจือจาง)</li>
                           <li>คนเบาๆ ให้เนื้อมะพร้าวดูดซับความร้อนประมาณ 1 นาที จากนั้น <span className="font-bold text-red-600">ปิดเตาทันที</span> ยกลงจากเตารอเสิร์ฟ</li>
                         </ul>
                       </div>
@@ -637,6 +625,18 @@
                     <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-1 rounded-full font-bold border border-amber-200">กรอบนานข้ามสัปดาห์</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
+                    
+                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 mb-2">
+                       <p className="text-amber-800 font-bold text-[12px] uppercase mb-2 flex items-center">
+                         <i className="fa-solid fa-cart-circle-exclamation text-base mr-1.5"></i> ⚠️ สเปกวัตถุดิบ (ห้ามซื้อผิดเด็ดขาด)
+                       </p>
+                       <ul className="list-disc pl-5 space-y-1.5 text-[13px] text-stone-700">
+                         <li><b className="text-stone-900">อัลมอนด์สไลซ์:</b> ต้องซื้อแบบ <b>"ดิบ (Raw)"</b> เท่านั้น! (ห้ามซื้อแบบอบสุกมาแล้ว เพราะเมื่อนำมาคั่วซ้ำจะไหม้ขม) เลือกถุงที่มีผงฝุ่นก้นถุงน้อยที่สุด</li>
+                         <li><b className="text-stone-900">มะพร้าวอบแห้ง:</b> ต้องเป็นแบบ <b>"เส้นหยาบ (Medium Shred)"</b> (ห้ามใช้แบบป่นละเอียดเป็นผง) และต้องเป็นแบบ <b>"ไม่หวาน (Unsweetened)"</b> เท่านั้น</li>
+                         <li><i className="text-stone-500">ยี่ห้อแนะนำเพื่อธุรกิจ: อัลมอนด์ (Heritage / Aro), มะพร้าวอบแห้ง (Imperial / Aro)</i></li>
+                       </ul>
+                    </div>
+                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -644,6 +644,7 @@
                         <p className="mt-2 text-stone-600 text-[13px] leading-relaxed">ใช้กระทะเทฟลอนหน้ากว้าง ตั้งไฟ <span className="font-bold text-red-500">"อ่อนที่สุด"</span> ใส่เนยสดจืด 30g ลงไป กลิ้งกระทะไปมา รอจนเนยละลายหมดและเริ่มส่งกลิ่นหอมสไตล์เบเกอรี</p>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
@@ -657,6 +658,7 @@
                         </ul>
                       </div>
                     </div>
+
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
@@ -668,6 +670,7 @@
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
 
