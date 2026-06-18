@@ -42,25 +42,51 @@ const defaultEquipments = [
 
 export default function App() {
   const [sellingPrice, setSellingPrice] = useState(() => {
-    const saved = localStorage.getItem('mj_price_react');
-    return saved ? JSON.parse(saved) : 89; 
+    try {
+      const saved = localStorage.getItem('mj_price_react');
+      return saved ? JSON.parse(saved) : 89; 
+    } catch (e) {
+      return 89;
+    }
   });
   
   const [activeTab, setActiveTab] = useState('recipe'); 
   
   const [items, setItems] = useState(() => {
-    const saved = localStorage.getItem('mj_items_react');
-    return saved ? JSON.parse(saved) : defaultItems;
+    try {
+      const saved = localStorage.getItem('mj_items_react');
+      return saved ? JSON.parse(saved) : defaultItems;
+    } catch (e) {
+      return defaultItems;
+    }
   });
 
   const [equipments, setEquipments] = useState(() => {
-    const saved = localStorage.getItem('mj_equip_react');
-    return saved ? JSON.parse(saved) : defaultEquipments;
+    try {
+      const saved = localStorage.getItem('mj_equip_react');
+      return saved ? JSON.parse(saved) : defaultEquipments;
+    } catch (e) {
+      return defaultEquipments;
+    }
   });
 
-  useEffect(() => { localStorage.setItem('mj_price_react', JSON.stringify(sellingPrice)); }, [sellingPrice]);
-  useEffect(() => { localStorage.setItem('mj_items_react', JSON.stringify(items)); }, [items]);
-  useEffect(() => { localStorage.setItem('mj_equip_react', JSON.stringify(equipments)); }, [equipments]);
+  useEffect(() => { 
+    try {
+      localStorage.setItem('mj_price_react', JSON.stringify(sellingPrice)); 
+    } catch (e) {}
+  }, [sellingPrice]);
+
+  useEffect(() => { 
+    try {
+      localStorage.setItem('mj_items_react', JSON.stringify(items)); 
+    } catch (e) {}
+  }, [items]);
+
+  useEffect(() => { 
+    try {
+      localStorage.setItem('mj_equip_react', JSON.stringify(equipments)); 
+    } catch (e) {}
+  }, [equipments]);
 
   const handleInputChange = (id, field, value) => {
     setItems(items.map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
@@ -473,7 +499,7 @@ export default function App() {
                     <p className="font-bold text-stone-800 mb-1 border-b border-stone-100 pb-1">การทำน้ำเชื่อมมะพร้าวน้ำหอม (เคล็ดลับความหอมลึก)</p>
                     <ul className="list-disc pl-4 space-y-1 mt-2 text-stone-600 text-[13px]">
                       <li><b className="text-stone-800">การกรองสำคัญมาก:</b> นำน้ำมะพร้าวน้ำหอมแท้ <span className="font-semibold text-blue-600">500 ml</span> มากรองผ่าน <span className="font-bold text-red-500">ผ้าขาวบาง 2 ชั้น</span> เพื่อเอาเศษกะลาและใยมะพร้าวออกให้หมด</li>
-                      <li><b className="text-stone-800">อัตราส่วนต้ม:</b> น้ำมะพร้าวที่กรองแล้ว + น้ำตาลทรายขาว <span className="font-semibold text-amber-600">1-2 ช้อนโต๊ะ</span> + ใบเตยแก่ <span className="font-semibold text-green-600">2-3 ใบ</span> (ขยำแล้วมัดปม)</li>
+                      <li><b className="text-stone-800">อัตราส่วนต้ม:</b> น้ำมะพร้าวที่กรองแล้ว + น้ำตาลทรายขาว <span className="font-semibold text-amber-600">1-2 ช้อนโต๊ะ</span> (ลดลงเพราะน้ำมะพร้าวมีความหวานธรรมชาติ) + ใบเตยแก่ <span className="font-semibold text-green-600">2-3 ใบ</span> (ขยำแล้วมัดปม)</li>
                       <li><b className="text-stone-800">วิธีต้ม:</b> ตั้งไฟให้เดือดจนกลิ่นใบเตยและมะพร้าวหอมฟุ้ง คนน้ำตาลให้ละลาย แล้ว<span className="font-bold text-red-500">ปิดเตาทันที</span></li>
                       <li><b className="text-stone-800">การแช่หล่อ:</b> พักน้ำเชื่อมมะพร้าวให้อุณหภูมิลดลงเหลือแค่ <span className="font-semibold text-stone-800">"อุ่นๆ หรืออุณหภูมิห้อง"</span> จากนั้นนำกล้วยแก้วที่น็อกน้ำแข็งแล้ว เทลงไปแช่หล่อไว้</li>
                       <li className="bg-yellow-50 text-yellow-800 p-3 rounded-lg font-semibold border border-yellow-200 mt-2">💡 <b className="uppercase">Chef's Secret:</b> แป้งมันและแป้งท้าวมีคุณสมบัติเหมือนฟองน้ำ เมื่อแช่ในน้ำมะพร้าวอุ่นๆ ตัวแป้งจะดูดซับความหอมหวานเข้าไป ทำให้เวลากัดกินจะได้กลิ่นหอมทะลุมิติจากข้างในครับ!</li>
