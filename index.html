@@ -9,17 +9,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- นำเข้า React.js -->
-  <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
   <!-- นำเข้า Babel -->
-  <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- นำเข้า FontAwesome Icons -->
+  <!-- นำเข้า FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; font-family: sans-serif; }
+    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; font-family: sans-serif;}
     .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -47,7 +47,6 @@
   </style>
 </head>
 <body>
-  <!-- จุดที่แอปจะแสดงผล -->
   <div id="root">
     <div id="loading-screen">
       <div class="spinner"></div>
@@ -78,10 +77,16 @@
       { id: 12, category: '3. ซูเปอร์ครัมเบิ้ลคั่ว', name: 'เนยสดจืด', spec: 'Allowrie (227g)', price: 120, totalQty: 227, unit: 'กรัม', usedQty: 2, checked: false },
       { id: 13, category: '3. ซูเปอร์ครัมเบิ้ลคั่ว', name: 'น้ำตาลทรายเกล็ดเล็ก', spec: 'มิตรผล', price: 25, totalQty: 1000, unit: 'กรัม', usedQty: 2, checked: false },
       
-      { id: 14, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ไอศกรีมกะทิสด (Dairy-Free)', spec: 'ถัง 3kg (~60 Scoop)', price: 350, totalQty: 60, unit: 'สกู๊ป', usedQty: 1, checked: false },
-      { id: 15, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ถ้วยพลาสติกใสทรงแบน', spec: 'พร้อมฝาโดม (50 ชุด)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
-      { id: 16, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'ช้อนตักขนม', spec: 'สีดำพรีเมียม (50 คัน)', price: 40, totalQty: 50, unit: 'คัน', usedQty: 1, checked: false },
-      { id: 17, category: '4. ไอศกรีม & แพ็กเกจจิ้ง', name: 'สติกเกอร์โลโก้', spec: 'สั่งทำ (100 ดวง)', price: 50, totalQty: 100, unit: 'ดวง', usedQty: 1, checked: false },
+      { id: 14, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ไอศกรีมกะทิสด (Dairy-Free)', spec: 'ถัง 3kg (~60 Scoop)', price: 350, totalQty: 60, unit: 'สกู๊ป', usedQty: 1, checked: false },
+      { id: 15, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ถ้วยพลาสติกใสทรงแบน', spec: 'พร้อมฝาโดม (50 ชุด)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
+      { id: 16, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'ช้อนตักขนม', spec: 'สีดำพรีเมียม (50 คัน)', price: 40, totalQty: 50, unit: 'คัน', usedQty: 1, checked: false },
+      { id: 17, category: '4. ไอศกรีม & แพ็กเกจจิ้ง (หน้าร้าน)', name: 'สติกเกอร์โลโก้', spec: 'สั่งทำ (100 ดวง)', price: 50, totalQty: 100, unit: 'ดวง', usedQty: 1, checked: false },
+      
+      // เพิ่มหมวดหมู่ Delivery
+      { id: 20, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถ้วยพลาสติก PP 12oz', spec: 'ชามใส่กล้วย+ซอส พร้อมฝา (50ชุด)', price: 120, totalQty: 50, unit: 'ชุด', usedQty: 1, checked: false },
+      { id: 21, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถ้วยไอศกรีมกระดาษคราฟท์', spec: 'ขนาด 4oz พร้อมฝา (50ชุด)', price: 145, totalQty: 50, unit: 'ชุด', usedQty: 1, checked: false },
+      { id: 22, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'กระปุกน้ำจิ้ม 1oz', spec: 'ฝาพับในตัว (ใส่ครัมเบิ้ล)', price: 40, totalQty: 100, unit: 'ใบ', usedQty: 1, checked: false },
+      { id: 23, category: '5. แพ็กเกจจิ้ง (Delivery)', name: 'ถุงกระดาษคราฟท์หูหิ้ว', spec: 'ไซส์จัดเบรก (50 ใบ)', price: 150, totalQty: 50, unit: 'ใบ', usedQty: 1, checked: false },
     ];
 
     const defaultEquipments = [
@@ -90,14 +95,16 @@
       { id: 3, name: 'หม้อต้มสเตนเลส', spec: 'สำหรับต้มกล้วย/กะทิ', price: 300, qty: 2, checked: false },
       { id: 4, name: 'กระทะเทฟลอน + พาย', spec: 'สำหรับคั่วครัมเบิ้ล', price: 450, qty: 1, checked: false },
       { id: 5, name: 'ถาดพลาสติก + กระดาษไข', spec: 'พักวัตถุดิบ / ครัมเบิ้ล', price: 150, qty: 1, checked: false },
-      { id: 6, name: 'ป้ายไวนิล / สแตนดี้', spec: 'ตกแต่งหน้าร้าน', price: 500, qty: 1, checked: false }
+      { id: 6, name: 'ป้ายไวนิล / สแตนดี้', spec: 'ตกแต่งหน้าร้าน', price: 500, qty: 1, checked: false },
+      { id: 7, name: 'ขวดสเปรย์ (Foggy)', spec: 'Food Grade (พรมน้ำ/อัญชัน)', price: 25, qty: 2, checked: false },
+      { id: 8, name: 'กะละมังผสมสเตนเลส', spec: 'ก้นลึก (สำหรับคลุกกล้วย)', price: 150, qty: 2, checked: false }
     ];
 
     function App() {
-      // 1. ระบบโหลดข้อมูล (เปลี่ยนกุญแจเป็น v7)
+      // เปลี่ยนรหัสตัวแปรเป็น v7
       const [sellingPrice, setSellingPrice] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v7_price');
+          const saved = localStorage.getItem('mj_price_v7');
           return saved ? JSON.parse(saved) : 89; 
         } catch (e) { return 89; }
       });
@@ -106,7 +113,7 @@
       
       const [items, setItems] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v7_items');
+          const saved = localStorage.getItem('mj_items_v7');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultItems;
@@ -117,7 +124,7 @@
 
       const [equipments, setEquipments] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_app_v7_equip');
+          const saved = localStorage.getItem('mj_equip_v7');
           if (saved) {
             const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed : defaultEquipments;
@@ -126,20 +133,18 @@
         } catch (e) { return defaultEquipments; }
       });
 
-      // 2. ระบบเซฟข้อมูลอัตโนมัติแบบปลอดภัย
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v7_price', JSON.stringify(sellingPrice)); } catch (e) {}
+        try { localStorage.setItem('mj_price_v7', JSON.stringify(sellingPrice)); } catch (e) {}
       }, [sellingPrice]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v7_items', JSON.stringify(items)); } catch (e) {}
+        try { localStorage.setItem('mj_items_v7', JSON.stringify(items)); } catch (e) {}
       }, [items]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_app_v7_equip', JSON.stringify(equipments)); } catch (e) {}
+        try { localStorage.setItem('mj_equip_v7', JSON.stringify(equipments)); } catch (e) {}
       }, [equipments]);
 
-      // 3. ฟังก์ชันจัดการข้อมูล
       const handleInputChange = (id, field, value) => {
         setItems((items || []).map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
       };
@@ -172,7 +177,6 @@
         setEquipments((equipments || []).map(item => ({ ...item, checked: false })));
       };
 
-      // 4. ระบบคำนวณต้นทุน
       const calculateCost = (price, totalQty, usedQty) => (!price || !totalQty || !usedQty) ? 0 : (price / totalQty) * usedQty;
       const totalCost = (items || []).reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
       const profit = sellingPrice - totalCost;
@@ -191,10 +195,8 @@
       const checkedCount = allShoppingItems.filter(item => item && item.checked).length;
       const progressPercent = allShoppingItems.length > 0 ? (checkedCount / allShoppingItems.length) * 100 : 0;
 
-      // 5. ส่วนแสดงผล (UI)
       return (
         <div className="min-h-screen bg-[#FDF9F1] pb-24 font-sans text-stone-800">
-          {/* ส่วนหัวแอป */}
           <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-[2rem]">
             <div className="flex justify-between items-center mb-1">
               <h1 className="text-xl font-bold flex items-center tracking-wide">
@@ -203,7 +205,7 @@
               </h1>
               <div className="bg-white/20 backdrop-blur-sm text-[10px] px-3 py-1.5 rounded-full font-medium border border-white/30 flex items-center">
                 <span className="w-2 h-2 rounded-full bg-green-400 mr-1.5 animate-pulse"></span>
-                บันทึกออโต้
+                ออนไลน์
               </div>
             </div>
             <p className="text-amber-100 text-xs pl-8">ระบบคำนวณต้นทุน & คู่มือสูตรอาหาร</p>
@@ -211,7 +213,7 @@
 
           <div className="p-4 max-w-md mx-auto w-full">
             
-            {/* TAB 1: DASHBOARD (ภาพรวมร้าน) */}
+            {/* TAB 1: DASHBOARD */}
             {activeTab === 'dashboard' && (
               <div className="space-y-5 pt-2">
                 <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
@@ -279,7 +281,7 @@
               </div>
             )}
 
-            {/* TAB 2: INGREDIENTS (จัดการวัตถุดิบ) */}
+            {/* TAB 2: INGREDIENTS */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
                 <div className="flex justify-between items-end mb-2">
@@ -348,7 +350,7 @@
               </div>
             )}
 
-            {/* TAB 3: SHOPPING LIST (เช็กลิสต์จ่ายตลาด) */}
+            {/* TAB 3: SHOPPING LIST */}
             {activeTab === 'shopping' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-4">
@@ -431,7 +433,7 @@
               </div>
             )}
 
-            {/* TAB 4: EQUIPMENT (อุปกรณ์) */}
+            {/* TAB 4: EQUIPMENT */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-6">
@@ -500,7 +502,6 @@
                     <span className="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-1 rounded-full font-bold border border-yellow-200">หัวใจความหนึบ</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
-                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -513,7 +514,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
@@ -525,7 +525,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
@@ -539,7 +538,6 @@
                         </ol>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">4</span>
                       <div className="w-full">
@@ -555,7 +553,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-yellow-400 text-yellow-900 flex items-center justify-center text-xs font-black mr-3 shrink-0 mt-0.5 shadow-sm">5</span>
                       <div className="w-full">
@@ -580,7 +577,6 @@
                     <span className="bg-orange-100 text-orange-800 text-[10px] px-2 py-1 rounded-full font-bold border border-orange-200">หอมละมุน</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
-                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -594,7 +590,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
@@ -605,7 +600,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
@@ -620,7 +614,6 @@
                         </ul>
                       </div>
                     </div>
-
                   </div>
                 </div>
 
@@ -628,11 +621,10 @@
                 <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-2 h-full bg-amber-700"></div>
                   <div className="px-5 py-4 border-b border-stone-50 flex items-center justify-between bg-amber-50/50">
-                    <h3 className="font-bold text-stone-800 text-lg ml-2">3. การทำครัมเบิ้ลมะพร้าวคั่ว (Topping)</h3>
+                    <h3 className="font-bold text-stone-800 text-lg ml-2">3. การทำซูเปอร์ครัมเบิ้ล (Topping)</h3>
                     <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-1 rounded-full font-bold border border-amber-200">กรอบนานข้ามสัปดาห์</span>
                   </div>
                   <div className="p-5 space-y-6 text-sm text-stone-700 bg-white">
-                    
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">1</span>
                       <div className="w-full">
@@ -640,7 +632,6 @@
                         <p className="mt-2 text-stone-600 text-[13px] leading-relaxed">ใช้กระทะเทฟลอนหน้ากว้าง ตั้งไฟ <span className="font-bold text-red-500">"อ่อนที่สุด"</span> ใส่เนยสดจืด 30g ลงไป กลิ้งกระทะไปมา รอจนเนยละลายหมดและเริ่มส่งกลิ่นหอมสไตล์เบเกอรี</p>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">2</span>
                       <div className="w-full">
@@ -654,7 +645,6 @@
                         </ul>
                       </div>
                     </div>
-
                     <div className="flex items-start">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5 shadow-sm">3</span>
                       <div className="w-full">
@@ -666,7 +656,6 @@
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </div>
 
@@ -714,6 +703,51 @@
                         <div>
                           <p className="font-bold text-white text-sm mb-0.5">Finishing Touch (ปิดท้ายเพิ่มมิติ)</p>
                           <p className="text-stone-300 leading-relaxed">ตักครัมเบิ้ลมะพร้าวคั่ว 1 ช้อนโต๊ะ <span className="text-amber-400 font-semibold">โรยรอบๆ ฐานไอศกรีม (ที่แห้ง) และโรยทับบนยอดไอศกรีมเล็กน้อย</span> (ห้ามโรยแช่ลงไปในซอสกะทิ เพราะครัมเบิ้ลจะเปียกและหมดความกรอบ) ปิดฝาโดม เสิร์ฟพร้อมช้อนพรีเมียมทันที!</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* ส่วนที่ 5: การจัดเสิร์ฟออนไลน์ */}
+                <div className="bg-blue-800 rounded-3xl shadow-lg border border-blue-700 overflow-hidden mb-6 text-blue-100 relative">
+                   <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+                  <div className="px-5 py-4 border-b border-blue-700/50 flex items-center relative z-10">
+                    <i className="fa-solid fa-motorcycle text-xl text-yellow-400 mr-2"></i>
+                    <h3 className="font-bold text-white text-lg">5. SOP การแพ็กส่ง Delivery (กันละลาย)</h3>
+                  </div>
+                  <div className="p-5 space-y-5 text-sm relative z-10 bg-blue-900/50">
+                    <div className="bg-blue-900 p-4 rounded-2xl border border-blue-700 inline-block w-full">
+                      <p className="text-blue-300 text-[11px] uppercase tracking-wider font-bold mb-1">อุปกรณ์แพ็กเกจจิ้งที่ต้องใช้ (แยก 3 ส่วน)</p>
+                      <p className="text-white font-medium text-sm">ถ้วย PP 12oz | ถ้วยไอศกรีม 4oz | กระปุกซอส 1oz | ถุงคราฟท์</p>
+                    </div>
+                    <ul className="list-none space-y-4 text-[13px]">
+                      <li className="flex items-start">
+                        <div className="w-5 h-5 rounded-full bg-blue-700 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-blue-600">1</div>
+                        <div>
+                          <p className="font-bold text-white text-sm mb-0.5">ถ้วยหลัก (The Base):</p>
+                          <p className="leading-relaxed">ใส่กล้วยแก้ว 2 สี + ราดซอสคาราเมลและเนื้อมะพร้าวอ่อน ลงในถ้วยพลาสติก PP 12oz ปิดฝาให้สนิท</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="w-5 h-5 rounded-full bg-blue-700 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-blue-600">2</div>
+                        <div>
+                          <p className="font-bold text-white text-sm mb-0.5">ถ้วยไอศกรีม (The Cold):</p>
+                          <p className="leading-relaxed">ตักไอศกรีม 1 สกู๊ปใหญ่ แยกใส่ถ้วยกระดาษคราฟท์ 4oz (กระดาษช่วยกันความร้อน) ปิดฝาให้แน่น ห้ามใส่รวมกับถ้วยกล้วยอุ่นๆ เด็ดขาด!</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="w-5 h-5 rounded-full bg-blue-700 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-blue-600">3</div>
+                        <div>
+                          <p className="font-bold text-white text-sm mb-0.5">กระปุกท็อปปิ้ง (The Crunch):</p>
+                          <p className="leading-relaxed">ตักครัมเบิ้ล 1 ช้อนโต๊ะ ใส่กระปุกซอสใบจิ๋ว 1oz เพื่อรักษาความกรอบ 100% จนกว่าจะถึงมือลูกค้า</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="w-5 h-5 rounded-full bg-blue-700 text-white flex items-center justify-center text-[10px] font-bold mr-3 shrink-0 border border-blue-600">4</div>
+                        <div>
+                          <p className="font-bold text-yellow-400 text-sm mb-0.5">The Magic Touch (แพ็กลงถุง):</p>
+                          <p className="leading-relaxed">นำถ้วยทั้ง 3 ใบ พร้อมช้อน ใส่ถุงกระดาษคราฟท์หูหิ้ว อย่าลืมใส่ <span className="font-semibold text-white">"การ์ดแนะนำวิธีทาน"</span> เพื่อสร้างความประทับใจให้ลูกค้าประกอบร่างเองที่บ้าน</p>
                         </div>
                       </li>
                     </ul>
