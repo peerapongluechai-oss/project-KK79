@@ -9,25 +9,52 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- นำเข้า React.js -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 
-  <!-- นำเข้า Babel -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- นำเข้า Babel (ตัวแปลภาษาให้เบราว์เซอร์อ่าน React ออก) -->
+  <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
 
-  <!-- นำเข้า FontAwesome (ใช้ในหน้าเว็บจริง) -->
+  <!-- นำเข้า FontAwesome Icons (สำหรับใช้งานบนเว็บจริง) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #FDF9F1; -webkit-tap-highlight-color: transparent; font-family: sans-serif; }
     .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px); }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     .strike-transition { transition: all 0.2s ease-in-out; }
+    
+    /* หน้าจอโหลดข้อมูล */
+    #loading-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #b45309;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #fde68a;
+      border-top: 4px solid #d97706;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <!-- จุดที่แอปจะแสดงผล (มีหน้าจอโหลดดักไว้ก่อน หาก React ยังโหลดไม่เสร็จ) -->
+  <div id="root">
+    <div id="loading-screen">
+      <div class="spinner"></div>
+      <h2 style="font-weight: bold; font-size: 1.2rem;">กำลังเตรียมครัว...</h2>
+      <p style="font-size: 0.8rem; color: #78716c; margin-top: 8px;">หากค้างเกิน 5 วินาที กรุณารีเฟรชหน้าเว็บ</p>
+    </div>
+  </div>
 
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -67,9 +94,10 @@
     ];
 
     function App() {
+      // 1. ระบบโหลดข้อมูล (เปลี่ยนรหัสตัวแปรเป็น v6 เพื่อล้างความจำเก่าทั้งหมด)
       const [sellingPrice, setSellingPrice] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_price_final');
+          const saved = localStorage.getItem('mj_app_v6_price');
           return saved ? JSON.parse(saved) : 89; 
         } catch (e) { return 89; }
       });
@@ -78,30 +106,40 @@
       
       const [items, setItems] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_items_final');
-          return saved ? JSON.parse(saved) : defaultItems;
+          const saved = localStorage.getItem('mj_app_v6_items');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            return Array.isArray(parsed) ? parsed : defaultItems;
+          }
+          return defaultItems;
         } catch (e) { return defaultItems; }
       });
 
       const [equipments, setEquipments] = useState(() => {
         try {
-          const saved = localStorage.getItem('mj_equip_final');
-          return saved ? JSON.parse(saved) : defaultEquipments;
+          const saved = localStorage.getItem('mj_app_v6_equip');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            return Array.isArray(parsed) ? parsed : defaultEquipments;
+          }
+          return defaultEquipments;
         } catch (e) { return defaultEquipments; }
       });
 
+      // 2. ระบบเซฟข้อมูลอัตโนมัติแบบปลอดภัย
       useEffect(() => { 
-        try { localStorage.setItem('mj_price_final', JSON.stringify(sellingPrice)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v6_price', JSON.stringify(sellingPrice)); } catch (e) {}
       }, [sellingPrice]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_items_final', JSON.stringify(items)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v6_items', JSON.stringify(items)); } catch (e) {}
       }, [items]);
 
       useEffect(() => { 
-        try { localStorage.setItem('mj_equip_final', JSON.stringify(equipments)); } catch (e) {}
+        try { localStorage.setItem('mj_app_v6_equip', JSON.stringify(equipments)); } catch (e) {}
       }, [equipments]);
 
+      // 3. ฟังก์ชันจัดการข้อมูล
       const handleInputChange = (id, field, value) => {
         setItems((items || []).map(item => item.id === id ? { ...item, [field]: ['name', 'spec', 'unit'].includes(field) ? value : (value === '' ? '' : Number(value)) } : item));
       };
@@ -134,6 +172,7 @@
         setEquipments((equipments || []).map(item => ({ ...item, checked: false })));
       };
 
+      // 4. ระบบคำนวณต้นทุน
       const calculateCost = (price, totalQty, usedQty) => (!price || !totalQty || !usedQty) ? 0 : (price / totalQty) * usedQty;
       const totalCost = (items || []).reduce((sum, item) => sum + calculateCost(item.price, item.totalQty, item.usedQty), 0);
       const profit = sellingPrice - totalCost;
@@ -142,17 +181,20 @@
       const breakEvenCups = profit > 0 ? Math.ceil(totalEquipCost / profit) : 0;
 
       const groupedItems = (items || []).reduce((acc, item) => {
+        if (!item.category) return acc;
         if (!acc[item.category]) acc[item.category] = [];
         acc[item.category].push(item);
         return acc;
       }, {});
 
       const allShoppingItems = [...(items || []), ...(equipments || [])];
-      const checkedCount = allShoppingItems.filter(item => item.checked).length;
+      const checkedCount = allShoppingItems.filter(item => item && item.checked).length;
       const progressPercent = allShoppingItems.length > 0 ? (checkedCount / allShoppingItems.length) * 100 : 0;
 
+      // 5. ส่วนแสดงผล (UI)
       return (
         <div className="min-h-screen bg-[#FDF9F1] pb-24 font-sans text-stone-800">
+          {/* ส่วนหัวแอป */}
           <div className="bg-gradient-to-r from-amber-600 to-orange-500 text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-[2rem]">
             <div className="flex justify-between items-center mb-1">
               <h1 className="text-xl font-bold flex items-center tracking-wide">
@@ -161,13 +203,15 @@
               </h1>
               <div className="bg-white/20 backdrop-blur-sm text-[10px] px-3 py-1.5 rounded-full font-medium border border-white/30 flex items-center">
                 <span className="w-2 h-2 rounded-full bg-green-400 mr-1.5 animate-pulse"></span>
-                บันทึกออโต้
+                ออนไลน์
               </div>
             </div>
             <p className="text-amber-100 text-xs pl-8">ระบบคำนวณต้นทุน & คู่มือสูตรอาหาร</p>
           </div>
 
           <div className="p-4 max-w-md mx-auto w-full">
+            
+            {/* TAB 1: DASHBOARD (ภาพรวมร้าน) */}
             {activeTab === 'dashboard' && (
               <div className="space-y-5 pt-2">
                 <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-50 rounded-[2rem] shadow-sm p-6 border border-amber-200/60 relative overflow-hidden">
@@ -235,6 +279,7 @@
               </div>
             )}
 
+            {/* TAB 2: INGREDIENTS (จัดการวัตถุดิบ) */}
             {activeTab === 'ingredients' && (
               <div className="space-y-6 pt-2">
                 <div className="flex justify-between items-end mb-2">
@@ -303,6 +348,7 @@
               </div>
             )}
 
+            {/* TAB 3: SHOPPING LIST (เช็กลิสต์จ่ายตลาด) */}
             {activeTab === 'shopping' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-4">
@@ -385,6 +431,7 @@
               </div>
             )}
 
+            {/* TAB 4: EQUIPMENT (อุปกรณ์) */}
             {activeTab === 'equipment' && (
               <div className="space-y-5 pt-2">
                 <div className="flex justify-between items-end mb-6">
@@ -435,6 +482,7 @@
               </div>
             )}
 
+            {/* TAB 5: RECIPE (สมุดสูตรลับ) */}
             {activeTab === 'recipe' && (
               <div className="space-y-6 pt-2">
                 <div className="mb-6">
@@ -482,7 +530,7 @@
                           <li>นำกล้วยที่สะเด็ดน้ำแล้ว ลงคลุกแป้งแห้งรอบแรกให้ทั่ว</li>
                           <li><span className="text-amber-600 font-semibold">พรมน้ำ:</span> สเปรย์น้ำอัญชัน (หรือน้ำเปล่า) บางๆ ให้ทั่วตัวกล้วย (ห้ามเทพรวดเดียว เพราะจะกลายเป็นก้อนแป้งเปียก)</li>
                           <li>โรยแป้งทับลงไป แล้วใช้มือสองข้างจับกะละมัง "เขย่ากระดก" (Tossing) ให้แป้งกลิ้งไปเกาะกล้วย</li>
-                          <li>ทำซ้ำขั้นตอน (พรมน้ำ ไป โรยแป้ง ไป เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
+                          <li>ทำซ้ำขั้นตอน (พรมน้ำ → โรยแป้ง → เขย่า) ประมาณ <span className="font-semibold">3-4 รอบ</span> จนแป้งเคลือบหนาประมาณ 2 มม.</li>
                           <li><b>ข้อควรระวัง:</b> ต้องนำกล้วยที่คลุกเสร็จ ไป "ร่อนผ่านกระชอนตาห่าง" เพื่อเอาเศษผงแป้งส่วนเกินทิ้งไป (ถ้านำไปต้มทั้งผงแป้ง น้ำต้มจะเหนียวเป็นเมือกทันที)</li>
                         </ol>
                       </div>
